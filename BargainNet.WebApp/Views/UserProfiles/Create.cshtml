@@ -23,7 +23,7 @@
                 <input asp-for="ProfilePic" class="form-control" />
                 <span asp-validation-for="ProfilePic" class="text-danger"></span>
             </div>
-            
+            <partial name="~/Views/UserProfiles/_AddressPartial.cshtml" />
             <partial name="~/Views/UserProfiles/NaturalPerson.cshtml" />
             <partial name="~/Views/UserProfiles/LegalPerson.cshtml" />
             <div class="form-group">

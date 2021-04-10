@@ -23,7 +23,6 @@ namespace BargainNet.Core.Services
 
         public async Task<bool> CreateProfile(NaturalPerson userProfile, string userName)
         {
-            await _userProfileRepository.AddAsync(userProfile);
             var user = await _userService.GetUserByName(userName);
 
             user.NaturalPerson = userProfile;

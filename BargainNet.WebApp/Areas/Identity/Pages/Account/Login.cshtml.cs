@@ -89,10 +89,7 @@ namespace BargainNet.WebApp.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                   
-                    var user = await _userService.GetUserByName(Input.UserName);
-                    
-                    if (!(await _userService.HasProfile(user.Id)))
+                    if (!(await _userService.HasProfile(Input.UserName)))
                     {
                         _logger.LogInformation("User logged in.");
                         return RedirectToAction("Create", "UserProfiles");

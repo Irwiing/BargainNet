@@ -33,7 +33,8 @@ namespace BargainNet.WebApp.Controllers
         // GET: UserProfiles/Details/5
         public async Task<IActionResult> Details(string userName)
         {
-            return View(await _userProfileService.GetProfile(userName));
+            var a = await _userProfileService.GetProfile(userName);
+            return View(a);
         }
 
         // GET: UserProfiles/Create
@@ -49,18 +50,15 @@ namespace BargainNet.WebApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Document,ProfilePic,FullName,BirthDate")] NaturalPerson userProfile)
+        public async Task<IActionResult> Create([Bind("Document,ProfilePic,FullName,BirthDate,Address")] NaturalPerson userProfile)
         {
             if (ModelState.IsValid)
             {
-                
                 var userName = User.Identity;
-                var id = ((ClaimsIdentity)userName).FindFirst(ClaimTypes.NameIdentifier);
                 
                 if (await _userProfileService.CreateProfile(userProfile, userName.Name))
                 {
                     return RedirectToAction(nameof(Details), new { userName = userName.Name });
-
                 }
 
             }
