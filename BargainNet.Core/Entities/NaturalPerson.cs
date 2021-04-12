@@ -13,6 +13,6 @@ namespace BargainNet.Core.Entities
             TotalSlotsAd = Constants.NaturalPersonFreeSlots;
         }
         public string FullName { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
     }
 }

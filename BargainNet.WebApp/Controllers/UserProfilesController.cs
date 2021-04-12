@@ -10,18 +10,19 @@ using BargainNet.Infra.SQL.Data;
 using BargainNet.Core.Contracts.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using BargainNet.WebApp.ModelView;
 
 namespace BargainNet.WebApp.Controllers
 {
     public class UserProfilesController : Controller
     {
         private readonly IUserProfileService _userProfileService;
-        private readonly DataContext _context;
-
-        public UserProfilesController(IUserProfileService userProfileService, DataContext context)
+        private readonly ICategoryService _categoryService;
+        public UserProfilesController(IUserProfileService userProfileService, 
+            ICategoryService categoryService)
         {
+            _categoryService = categoryService;
             _userProfileService = userProfileService;
-            _context = context;
         }
 
         // GET: UserProfiles
@@ -38,8 +39,10 @@ namespace BargainNet.WebApp.Controllers
 
         // GET: UserProfiles/Create
         [Authorize]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var categories = await _categoryService.GetCategories();
+            ViewData["Categories"] = categories;
             return View();
         }
 
@@ -49,23 +52,52 @@ namespace BargainNet.WebApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Document,ProfilePic,FullName,BirthDate")] NaturalPerson userProfile)
+        public async Task<IActionResult> Create(CreateProfileView createProfile, string[] interests, bool isLegalPerson)
         {
             if (ModelState.IsValid)
             {
-                
+                bool created = false;
                 var userName = User.Identity;
-                var id = ((ClaimsIdentity)userName).FindFirst(ClaimTypes.NameIdentifier);
-                
-                if (await _userProfileService.CreateProfile(userProfile, userName.Name))
+                List<Category> interestCategories = new List<Category>();
+                foreach (var interest in interests)
                 {
-                    return RedirectToAction(nameof(Details), new { userName = userName.Name });
+                    interestCategories.Add(await _categoryService.GetCategory(interest));
+                }
+                if (isLegalPerson)
+                {
+                    var legalPerson = new LegalPerson
+                    {
+                        Document = createProfile.Document,
+                        ProfilePic = createProfile.ProfilePic,
+                        Address = createProfile.Address,
+                        CompanyName = createProfile.CompanyName,
+                        TradeName = createProfile.TradeName,
+                        DocumentPic = createProfile.Document,
+                        Interests = interestCategories
+                    };
 
+                    created = await _userProfileService.CreateProfile(legalPerson, userName.Name);
+                }
+                else
+                {
+                    var naturalPerson = new NaturalPerson
+                    {
+                        Document = createProfile.Document,
+                        ProfilePic = createProfile.ProfilePic,
+                        Address = createProfile.Address,
+                        FullName = createProfile.FullName,
+                        BirthDate = createProfile.BirthDate,
+                        Interests = interestCategories
+                    };
+                    created = await _userProfileService.CreateProfile(naturalPerson, userName.Name);
                 }
 
+                if(created) return RedirectToAction(nameof(Details), new { userName = userName.Name });
+
             }
-            return View(userProfile);
+            return View(createProfile);
         }
+
 
         // GET: UserProfiles/Edit/5
         public async Task<IActionResult> Edit(Guid? id)

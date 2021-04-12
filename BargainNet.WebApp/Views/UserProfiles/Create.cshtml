@@ -1,7 +1,8 @@
-﻿@model BargainNet.Core.Entities.UserProfile
+﻿@model BargainNet.WebApp.ModelView.CreateProfileView
 
 @{
     ViewData["Title"] = "Create";
+    List<BargainNet.Core.Entities.Category> categories = ViewData["Categories"] as List<BargainNet.Core.Entities.Category>;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,22 +11,49 @@
 <h4>UserProfile</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Document" class="control-label"></label>
-                <input asp-for="Document" class="form-control" />
-                <span asp-validation-for="Document" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProfilePic" class="control-label"></label>
-                <input asp-for="ProfilePic" class="form-control" />
-                <span asp-validation-for="ProfilePic" class="text-danger"></span>
+            <div class="d-flex">
+                <div class="col-md-6">
+                    <input class="custom-checkbox" id="legalPerson" type="checkbox" name="personType" value="2" data-toggle="collapse" data-parent="#people" href="#legalPerson">
+                    <label for="legalPerson">Pessoa Jurídica</label>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Document" class="control-label"></label>
+                        <input asp-for="Document" class="form-control" />
+                        <span asp-validation-for="Document" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProfilePic" class="control-label"></label>
+                        <input asp-for="ProfilePic" class="form-control" />
+                        <span asp-validation-for="ProfilePic" class="text-danger"></span>
+                    </div>
+                    <div class="panel-group" id="people">
+                        <div id="naturalPersonPanel" class="panel-collapse">
+                            <div class="panel-body">
+                                <partial name="~/Views/UserProfiles/NaturalPerson.cshtml" />
+                            </div>
+                        </div>
+                        <div id="legalPersonPanel" class="panel-collapse">
+                            <div class="panel-body">
+                                <partial name="~/Views/UserProfiles/LegalPerson.cshtml" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <partial name="~/Views/UserProfiles/_AddressPartial.cshtml" />
+                </div>
             </div>
             
-            <partial name="~/Views/UserProfiles/NaturalPerson.cshtml" />
-            <partial name="~/Views/UserProfiles/LegalPerson.cshtml" />
+                @foreach (BargainNet.Core.Entities.Category category in categories)
+                {
+                    <div class="btn btn-danger">
+                    <input class="custom-checkbox rounded" type="checkbox" value="@category.Id" name="interests" class="btn btn-secondary active" />
+                    @category.Name
+                    </div>
+                }
+            
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -33,10 +61,19 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#legalPerson').change(function (e) {
+            e.stopPropagation();
+            if (!this.checked) {
+                $('#naturalPersonPanel').collapse('show');
+                $('#legalPersonPanel').collapse('hide');
+            } else {
+                $('#naturalPersonPanel').collapse('hide');
+                $('#legalPersonPanel').collapse('show');
+            }
+        })
+    </script>
 }

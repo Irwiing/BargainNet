@@ -26,9 +26,9 @@ namespace BargainNet.Core.Services
         {
             return await _userRepository.GetByUserNameAsync(userName);
         }
-        public async Task<bool> HasProfile(string userId)
+        public async Task<bool> HasProfile(string userName)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByUserNameAsync(userName);
 
             if (user.NaturalPerson == null && user.LegalPerson == null)
             {

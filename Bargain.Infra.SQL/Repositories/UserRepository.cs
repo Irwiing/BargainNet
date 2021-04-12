@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bargain.Infra.SQL.Repositories
+namespace BargainNet.Infra.SQL.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -37,13 +37,22 @@ namespace Bargain.Infra.SQL.Repositories
 
         public async Task<User> GetByIdAsync(string userId)
         {
-          return await _dataContext.UserPerson.Include(up => up.NaturalPerson).FirstOrDefaultAsync(u => u.Id == userId);
-            
+          var pessoa = await _dataContext.UserPerson.Include(up => up.NaturalPerson).FirstOrDefaultAsync(u => u.Id == userId);
+            if(pessoa.NaturalPerson == null)
+            {
+               return await _dataContext.UserPerson.Include(up => up.LegalPerson).FirstOrDefaultAsync(u => u.Id == userId);
+            }
+            return pessoa;
         }
 
         public async Task<User> GetByUserNameAsync(string objUserName)
         {
-            return await _userManager.FindByNameAsync(objUserName);
+            var pessoa = await _dataContext.UserPerson.Include(up => up.NaturalPerson).FirstOrDefaultAsync(u => u.NormalizedUserName == objUserName.ToUpper());
+            if (pessoa.NaturalPerson == null)
+            {
+                return await _dataContext.UserPerson.Include(up => up.LegalPerson).FirstOrDefaultAsync(u => u.NormalizedUserName == objUserName.ToUpper());
+            }
+            return pessoa;
         }
 
         public async Task<IdentityResult> UpdateAsync(User user)

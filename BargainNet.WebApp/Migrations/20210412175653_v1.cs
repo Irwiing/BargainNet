@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BargainNet.WebApp.Migrations
 {
-    public partial class initial : Migration
+    public partial class v1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,7 +22,7 @@ namespace BargainNet.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Address",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -35,7 +35,7 @@ namespace BargainNet.WebApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,7 +53,7 @@ namespace BargainNet.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -61,7 +61,36 @@ namespace BargainNet.WebApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfile",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Document = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProfilePic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BarganhaPoints = table.Column<int>(type: "int", nullable: false),
+                    TotalSlotsAd = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TradeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocumentPic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfile", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserProfile_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,42 +112,6 @@ namespace BargainNet.WebApp.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserProfile",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Document = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProfilePic = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BarganhaPoints = table.Column<int>(type: "int", nullable: false),
-                    TotalSlotsAd = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    InterestsId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TradeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocumentPic = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserProfile", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserProfile_Address_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Address",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UserProfile_Category_InterestsId",
-                        column: x => x.InterestsId,
-                        principalTable: "Category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -146,9 +139,9 @@ namespace BargainNet.WebApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AdAuction_Category_CategoryId",
+                        name: "FK_AdAuction_Categories_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -196,6 +189,30 @@ namespace BargainNet.WebApp.Migrations
                         principalTable: "UserProfile",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryUserProfile",
+                columns: table => new
+                {
+                    InterestsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserProfilesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryUserProfile", x => new { x.InterestsId, x.UserProfilesId });
+                    table.ForeignKey(
+                        name: "FK_CategoryUserProfile_Categories_InterestsId",
+                        column: x => x.InterestsId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryUserProfile_UserProfile_UserProfilesId",
+                        column: x => x.UserProfilesId,
+                        principalTable: "UserProfile",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -393,6 +410,11 @@ namespace BargainNet.WebApp.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CategoryUserProfile_UserProfilesId",
+                table: "CategoryUserProfile",
+                column: "UserProfilesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Offer_AdAuctionId",
                 table: "Offer",
                 column: "AdAuctionId");
@@ -411,11 +433,6 @@ namespace BargainNet.WebApp.Migrations
                 name: "IX_UserProfile_AddressId",
                 table: "UserProfile",
                 column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_InterestsId",
-                table: "UserProfile",
-                column: "InterestsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -436,6 +453,9 @@ namespace BargainNet.WebApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CategoryUserProfile");
+
+            migrationBuilder.DropTable(
                 name: "Offer");
 
             migrationBuilder.DropTable(
@@ -454,13 +474,13 @@ namespace BargainNet.WebApp.Migrations
                 name: "AdAcutionSettings");
 
             migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
                 name: "UserProfile");
 
             migrationBuilder.DropTable(
-                name: "Address");
-
-            migrationBuilder.DropTable(
-                name: "Category");
+                name: "Addresses");
         }
     }
 }

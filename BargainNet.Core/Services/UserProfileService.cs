@@ -14,16 +14,19 @@ namespace BargainNet.Core.Services
     {
         private readonly IUserService _userService;
         private readonly IUserProfileRepository _userProfileRepository;
+        private readonly ICategoryService _categoryService;
 
-        public UserProfileService(IUserService userService, IUserProfileRepository userProfileRepository)
+        public UserProfileService(IUserService userService, 
+            IUserProfileRepository userProfileRepository,
+            ICategoryService categoryService)
         {
             _userService = userService;
+            _categoryService = categoryService;
             _userProfileRepository = userProfileRepository;
         }
 
         public async Task<bool> CreateProfile(NaturalPerson userProfile, string userName)
         {
-            await _userProfileRepository.AddAsync(userProfile);
             var user = await _userService.GetUserByName(userName);
 
             user.NaturalPerson = userProfile;
@@ -32,6 +35,21 @@ namespace BargainNet.Core.Services
                 return true;
             }
             return false;
+        }
+        public async Task<bool> CreateProfile(LegalPerson userProfile, string userName)
+        {
+            var user = await _userService.GetUserByName(userName);
+
+            user.LegalPerson = userProfile;
+            if (await _userService.UpdateUser(user))
+            {
+                return true;
+            }
+            return false;
+        }
+        public Task<List<Category>> GetCategories()
+        {
+            return _categoryService.GetCategories();
         }
 
         public async Task<User> GetProfile(string userName)

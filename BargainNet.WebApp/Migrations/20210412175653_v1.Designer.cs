@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BargainNet.WebApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210409135947_initial")]
-    partial class initial
+    [Migration("20210412175653_v1")]
+    partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -111,7 +111,7 @@ namespace BargainNet.WebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.Category", b =>
@@ -125,7 +125,7 @@ namespace BargainNet.WebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.Offer", b =>
@@ -261,9 +261,6 @@ namespace BargainNet.WebApp.Migrations
                     b.Property<string>("Document")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("InterestsId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("ProfilePic")
                         .HasColumnType("nvarchar(max)");
 
@@ -281,11 +278,24 @@ namespace BargainNet.WebApp.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("InterestsId");
-
                     b.ToTable("UserProfile");
 
                     b.HasDiscriminator<string>("type").HasValue("UserProfile");
+                });
+
+            modelBuilder.Entity("CategoryUserProfile", b =>
+                {
+                    b.Property<Guid>("InterestsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserProfilesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("InterestsId", "UserProfilesId");
+
+                    b.HasIndex("UserProfilesId");
+
+                    b.ToTable("CategoryUserProfile");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -512,13 +522,22 @@ namespace BargainNet.WebApp.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
-                    b.HasOne("BargainNet.Core.Entities.Category", "Interests")
-                        .WithMany()
-                        .HasForeignKey("InterestsId");
-
                     b.Navigation("Address");
+                });
 
-                    b.Navigation("Interests");
+            modelBuilder.Entity("CategoryUserProfile", b =>
+                {
+                    b.HasOne("BargainNet.Core.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("InterestsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BargainNet.Core.Entities.UserProfile", null)
+                        .WithMany()
+                        .HasForeignKey("UserProfilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
