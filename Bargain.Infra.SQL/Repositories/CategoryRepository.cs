@@ -1,6 +1,7 @@
 ﻿using BargainNet.Core.Contracts.Repositories;
 using BargainNet.Core.Entities;
 using BargainNet.Infra.SQL.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace BargainNet.Infra.SQL.Repositories
 {
-    public class UserProfileRepository : IUserProfileRepository
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly DataContext _dataContext;
-        public UserProfileRepository(DataContext dataContext)
+        public CategoryRepository(DataContext dataContext)
         {
             _dataContext = dataContext;
         }
-        public async Task AddAsync(NaturalPerson obj)
+
+        public Task AddAsync(Category obj)
         {
-            await _dataContext.NaturalPeople.AddAsync(obj);
-            await _dataContext.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
         public Task DeleteAsync(int objId)
@@ -27,17 +28,19 @@ namespace BargainNet.Infra.SQL.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<NaturalPerson>> FindAllAssync()
+        public async Task<List<Category>> FindAllAssync()
         {
-            throw new NotImplementedException();
+            var a = await _dataContext.Categories.ToListAsync();
+          
+            return (a);
         }
 
-        public Task<NaturalPerson> GetByIdAsync(string objId)
+        public async Task<Category> GetByIdAsync(string objId)
         {
-            throw new NotImplementedException();
+            return (await _dataContext.Categories.FirstOrDefaultAsync(category => category.Id == Guid.Parse(objId)));
         }
 
-        public Task UpdateAsync(NaturalPerson obj)
+        public Task UpdateAsync(Category obj)
         {
             throw new NotImplementedException();
         }

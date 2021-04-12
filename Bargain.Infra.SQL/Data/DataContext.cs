@@ -19,6 +19,8 @@ namespace BargainNet.Infra.SQL.Data
         {
             builder.Entity<User>().HasOne(u => u.LegalPerson);
             builder.Entity<User>().HasOne(u => u.NaturalPerson);
+            builder.Entity<Category>().HasMany(c => c.UserProfiles);
+            builder.Entity<UserProfile>().HasMany(up => up.Interests);
             builder.Entity<UserProfile>()
                 .HasDiscriminator<string>("type")
                 .HasValue<LegalPerson>("legal_person")
@@ -29,8 +31,9 @@ namespace BargainNet.Infra.SQL.Data
 
         }
         public DbSet<User> UserPerson { get; set; }
-        public DbSet<NaturalPerson> NaturalPersons { get; set; }
-        public DbSet<LegalPerson> LegalPersons { get; set; }
+        public DbSet<NaturalPerson> NaturalPeople { get; set; }
+        public DbSet<LegalPerson> LegalPeople { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }

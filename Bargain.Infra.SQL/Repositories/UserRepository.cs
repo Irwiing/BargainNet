@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bargain.Infra.SQL.Repositories
+namespace BargainNet.Infra.SQL.Repositories
 {
     public class UserRepository : IUserRepository
     {

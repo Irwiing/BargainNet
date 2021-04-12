@@ -1,4 +1,4 @@
-﻿using Bargain.Infra.SQL.Repositories;
+﻿using BargainNet.Infra.SQL.Repositories;
 using BargainNet.Core.Contracts.Repositories;
 using BargainNet.Core.Contracts.Services;
 using BargainNet.Core.Entities;
@@ -30,6 +30,9 @@ namespace BargainNet.WebApp.Areas.Identity
                 services.AddScoped<IUserProfileService, UserProfileService>();
                 services.AddScoped<IUserRepository, UserRepository>();
                 services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+                services.AddScoped<ICategoryService, CategoryService>();
+                services.AddScoped<ICategoryRepository, CategoryRepository>();
+
             });
         }
     }

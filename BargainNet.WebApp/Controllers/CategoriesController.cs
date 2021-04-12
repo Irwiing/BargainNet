@@ -10,22 +10,22 @@ using BargainNet.Infra.SQL.Data;
 
 namespace BargainNet.WebApp.Controllers
 {
-    public class NaturalPersonsController : Controller
+    public class CategoriesController : Controller
     {
         private readonly DataContext _context;
 
-        public NaturalPersonsController(DataContext context)
+        public CategoriesController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: NaturalPersons
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.NaturalPersons.ToListAsync());
+            return View(await _context.Categories.ToListAsync());
         }
 
-        // GET: NaturalPersons/Details/5
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -33,40 +33,40 @@ namespace BargainNet.WebApp.Controllers
                 return NotFound();
             }
 
-            var naturalPerson = await _context.NaturalPersons
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (naturalPerson == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(naturalPerson);
+            return View(category);
         }
 
-        // GET: NaturalPersons/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: NaturalPersons/Create
+        // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,BirthDate,Document,ProfilePic,BarganhaPoints,TotalSlotsAd,Status,Id")] NaturalPerson naturalPerson)
+        public async Task<IActionResult> Create([Bind("Name,Id")] Category category)
         {
             if (ModelState.IsValid)
             {
-                naturalPerson.Id = Guid.NewGuid();
-                _context.Add(naturalPerson);
+                category.Id = Guid.NewGuid();
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(naturalPerson);
+            return View(category);
         }
 
-        // GET: NaturalPersons/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -74,22 +74,22 @@ namespace BargainNet.WebApp.Controllers
                 return NotFound();
             }
 
-            var naturalPerson = await _context.NaturalPersons.FindAsync(id);
-            if (naturalPerson == null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(naturalPerson);
+            return View(category);
         }
 
-        // POST: NaturalPersons/Edit/5
+        // POST: Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("FullName,BirthDate,Document,ProfilePic,BarganhaPoints,TotalSlotsAd,Status,Id")] NaturalPerson naturalPerson)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Name,Id")] Category category)
         {
-            if (id != naturalPerson.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -98,12 +98,12 @@ namespace BargainNet.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(naturalPerson);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NaturalPersonExists(naturalPerson.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -114,10 +114,10 @@ namespace BargainNet.WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(naturalPerson);
+            return View(category);
         }
 
-        // GET: NaturalPersons/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -125,30 +125,30 @@ namespace BargainNet.WebApp.Controllers
                 return NotFound();
             }
 
-            var naturalPerson = await _context.NaturalPersons
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (naturalPerson == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(naturalPerson);
+            return View(category);
         }
 
-        // POST: NaturalPersons/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var naturalPerson = await _context.NaturalPersons.FindAsync(id);
-            _context.NaturalPersons.Remove(naturalPerson);
+            var category = await _context.Categories.FindAsync(id);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NaturalPersonExists(Guid id)
+        private bool CategoryExists(Guid id)
         {
-            return _context.NaturalPersons.Any(e => e.Id == id);
+            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }
