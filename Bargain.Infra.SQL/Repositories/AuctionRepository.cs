@@ -35,13 +35,14 @@ namespace BargainNet.Infra.SQL.Repositories
 
         public async Task<AdAuction> GetByIdAsync(Guid objId)
         {
-             var a  = await _dataContext.Auctions.Include(a => a.AdAcutionSettings).FirstOrDefaultAsync(a => a.Id == objId) ;
-            return a;
+            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).FirstOrDefaultAsync(a => a.Id == objId) ;
+
         }
 
-        public Task UpdateAsync(AdAuction obj)
+        public async Task UpdateAsync(AdAuction obj)
         {
-            throw new NotImplementedException();
+            _dataContext.Auctions.Update(obj);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

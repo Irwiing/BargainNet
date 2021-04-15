@@ -16,6 +16,6 @@ namespace BargainNet.Core.Entities
         public string Model { get; set; }
         public virtual Category Category { get; set; }
         public virtual AdAcutionSettings AdAcutionSettings { get; set; }
-        public virtual IEnumerable<Offer> Offers{ get; set; }
+        public virtual List<Offer> Offers{ get; set; }
     }
 }

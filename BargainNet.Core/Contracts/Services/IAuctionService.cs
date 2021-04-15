@@ -13,5 +13,6 @@ namespace BargainNet.Core.Contracts.Services
         Task<List<AdAuction>> GetAuctions();
         Task<AdAuction> GetAuction(Guid auctionId);
         Task CreateAuction(string userId, AdAuction auction);
+        Task CreateOffer(Offer offer, Guid idAuction);
     }
 }

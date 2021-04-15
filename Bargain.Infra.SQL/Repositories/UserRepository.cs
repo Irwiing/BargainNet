@@ -44,7 +44,7 @@ namespace BargainNet.Infra.SQL.Repositories
                 .Include(up => up.UserProfile.AdAuctions)
                 .Include(up => up.UserProfile.Interests)
                 .Include(up => up.UserProfile.PaydPackages)
-                .FirstOrDefaultAsync(u => u.NormalizedUserName == userId.ToUpper());
+                .FirstOrDefaultAsync(u => u.Id == userId);
             
             return pessoa;
         }

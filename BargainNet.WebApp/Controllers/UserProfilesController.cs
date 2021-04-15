@@ -35,10 +35,10 @@ namespace BargainNet.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Details()
         {
-            var userName = User.Identity.Name;
-            var auctions = await _auctionService.GetUserInterestAuctions(userName);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var auctions = await _auctionService.GetUserInterestAuctions(userId);
             ViewData["myAuctions"] = auctions;
-            return View(await _userProfileService.GetProfile(userName));
+            return View(await _userProfileService.GetProfile(userId));
         }
 
         // GET: UserProfiles/Create

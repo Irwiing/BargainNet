@@ -42,6 +42,13 @@ namespace BargainNet.Core.Services
             var user = await _userService.GetUser(userId);
             return allAuctions.FindAll(a => user.UserProfile.Interests.Contains(a.Category));
         }
+
+        public async Task CreateOffer(Offer offer, Guid idAuction)
+        {
+            var auction = await _auctionRepository.GetByIdAsync(idAuction);
+            auction.Offers.Add(offer);
+            await _auctionRepository.UpdateAsync(auction);
+        }
     }
     
 }

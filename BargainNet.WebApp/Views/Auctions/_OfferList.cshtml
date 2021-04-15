@@ -1,0 +1,18 @@
+﻿@model IEnumerable<BargainNet.Core.Entities.Offer>
+@{ 
+    Layout = "";
+}
+@if (Model == null)
+{
+    <div><p>Nenhum lance foi dado</p></div>
+}
+else
+{
+    @foreach (var item in Model)
+    {
+        <div>
+            <p>Lance: </p>
+            <p>@item.Value</p>
+        </div>
+    }
+}

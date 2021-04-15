@@ -1,0 +1,29 @@
+﻿@model BargainNet.Core.Entities.Offer
+@{ 
+    System.Guid idAuction = (System.Guid)ViewData["idAuction"];
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateOffer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="idAuction" value="@idAuction" />
+            <div class="form-group">
+                <h3 class="control-label">Informe um valor de lance</h3>
+                
+            </div>
+            <div class="form-group">
+                <label asp-for="Value" class="control-label"></label>
+                <input asp-for="Value" class="form-control" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
