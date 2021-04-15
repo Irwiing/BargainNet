@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace BargainNet.Core.Entities
 {
-    public class LegalPerson : UserProfile
+    public class LegalPerson : EntityBase
     {
-        public LegalPerson()
-        {
-            TotalSlotsAd = Constants.LegalPersonFreeSlots;
-        }
         public string CompanyName { get; set; }
         public string TradeName { get; set; }
         public string DocumentPic { get; set; }

@@ -80,7 +80,7 @@ namespace BargainNet.WebApp.Migrations
 
                     b.HasIndex("UserProfileId");
 
-                    b.ToTable("AdAuction");
+                    b.ToTable("Auctions");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.Address", b =>
@@ -124,6 +124,43 @@ namespace BargainNet.WebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("BargainNet.Core.Entities.LegalPerson", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentPic")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TradeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LegalPerson");
+                });
+
+            modelBuilder.Entity("BargainNet.Core.Entities.NaturalPerson", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NaturalPerson");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.Offer", b =>
@@ -188,17 +225,11 @@ namespace BargainNet.WebApp.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("LegalPersonId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid?>("NaturalPersonId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -227,11 +258,10 @@ namespace BargainNet.WebApp.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<Guid?>("UserProfileId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("LegalPersonId");
-
-                    b.HasIndex("NaturalPersonId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -240,6 +270,8 @@ namespace BargainNet.WebApp.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserProfileId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -259,6 +291,12 @@ namespace BargainNet.WebApp.Migrations
                     b.Property<string>("Document")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("LegalPersonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("NaturalPersonId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ProfilePic")
                         .HasColumnType("nvarchar(max)");
 
@@ -268,17 +306,15 @@ namespace BargainNet.WebApp.Migrations
                     b.Property<int>("TotalSlotsAd")
                         .HasColumnType("int");
 
-                    b.Property<string>("type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
 
-                    b.ToTable("UserProfile");
+                    b.HasIndex("LegalPersonId");
 
-                    b.HasDiscriminator<string>("type").HasValue("UserProfile");
+                    b.HasIndex("NaturalPersonId");
+
+                    b.ToTable("UserProfiles");
                 });
 
             modelBuilder.Entity("CategoryUserProfile", b =>
@@ -431,35 +467,6 @@ namespace BargainNet.WebApp.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BargainNet.Core.Entities.LegalPerson", b =>
-                {
-                    b.HasBaseType("BargainNet.Core.Entities.UserProfile");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DocumentPic")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TradeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("legal_person");
-                });
-
-            modelBuilder.Entity("BargainNet.Core.Entities.NaturalPerson", b =>
-                {
-                    b.HasBaseType("BargainNet.Core.Entities.UserProfile");
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("natural_person");
-                });
-
             modelBuilder.Entity("BargainNet.Core.Entities.AdAuction", b =>
                 {
                     b.HasOne("BargainNet.Core.Entities.AdAcutionSettings", "AdAcutionSettings")
@@ -501,17 +508,11 @@ namespace BargainNet.WebApp.Migrations
 
             modelBuilder.Entity("BargainNet.Core.Entities.User", b =>
                 {
-                    b.HasOne("BargainNet.Core.Entities.LegalPerson", "LegalPerson")
+                    b.HasOne("BargainNet.Core.Entities.UserProfile", "UserProfile")
                         .WithMany()
-                        .HasForeignKey("LegalPersonId");
+                        .HasForeignKey("UserProfileId");
 
-                    b.HasOne("BargainNet.Core.Entities.NaturalPerson", "NaturalPerson")
-                        .WithMany()
-                        .HasForeignKey("NaturalPersonId");
-
-                    b.Navigation("LegalPerson");
-
-                    b.Navigation("NaturalPerson");
+                    b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.UserProfile", b =>
@@ -520,7 +521,19 @@ namespace BargainNet.WebApp.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
+                    b.HasOne("BargainNet.Core.Entities.LegalPerson", "LegalPerson")
+                        .WithMany()
+                        .HasForeignKey("LegalPersonId");
+
+                    b.HasOne("BargainNet.Core.Entities.NaturalPerson", "NaturalPerson")
+                        .WithMany()
+                        .HasForeignKey("NaturalPersonId");
+
                     b.Navigation("Address");
+
+                    b.Navigation("LegalPerson");
+
+                    b.Navigation("NaturalPerson");
                 });
 
             modelBuilder.Entity("CategoryUserProfile", b =>

@@ -16,9 +16,10 @@ namespace BargainNet.Infra.SQL.Repositories
         {
             _dataContext = dataContext;
         }
-        public async Task AddAsync(NaturalPerson obj)
+
+        public async Task AddAsync(UserProfile obj)
         {
-            await _dataContext.NaturalPeople.AddAsync(obj);
+            await _dataContext.UserProfiles.AddAsync(obj);
             await _dataContext.SaveChangesAsync();
         }
 
@@ -27,17 +28,17 @@ namespace BargainNet.Infra.SQL.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<NaturalPerson>> FindAllAssync()
+        public Task<List<UserProfile>> FindAllAssync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<NaturalPerson> GetByIdAsync(string objId)
+        public Task<UserProfile> GetByIdAsync(Guid objId)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(NaturalPerson obj)
+        public Task UpdateAsync(UserProfile obj)
         {
             throw new NotImplementedException();
         }

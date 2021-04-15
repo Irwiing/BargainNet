@@ -1,7 +1,6 @@
 ﻿@model BargainNet.Core.Entities.Category
 
-<div class="btn-group-toggle" data-toggle="buttons">
-    <label asp-for="Name" class="btn btn-secondary active">
-        
-    </label>
+<div class="btn btn-danger">
+    <input class="custom-checkbox rounded" type="checkbox" value="@Model.Id" name="interests" />
+    @Model.Name
 </div>

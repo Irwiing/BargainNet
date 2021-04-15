@@ -10,8 +10,9 @@ namespace BargainNet.Core.Contracts.Services
     public interface IUserService
     {
         Task<bool> HasProfile(string userName);
+        Task<bool> IsLegalPerson(string userName);
         Task<User> GetUserByName(string userName);
-        Task<User> GetUser(string userName);
+        Task<User> GetUser(string userId);
         Task<bool> UpdateUser(User user);
     }
 }

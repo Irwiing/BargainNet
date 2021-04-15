@@ -30,14 +30,12 @@ namespace BargainNet.Infra.SQL.Repositories
 
         public async Task<List<Category>> FindAllAssync()
         {
-            var a = await _dataContext.Categories.ToListAsync();
-          
-            return (a);
+            return await _dataContext.Categories.ToListAsync();
         }
 
-        public async Task<Category> GetByIdAsync(string objId)
+        public async Task<Category> GetByIdAsync(Guid objId)
         {
-            return (await _dataContext.Categories.FirstOrDefaultAsync(category => category.Id == Guid.Parse(objId)));
+            return await _dataContext.Categories.FirstOrDefaultAsync(category => category.Id == objId);
         }
 
         public Task UpdateAsync(Category obj)

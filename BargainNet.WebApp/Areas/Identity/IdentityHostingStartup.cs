@@ -32,7 +32,9 @@ namespace BargainNet.WebApp.Areas.Identity
                 services.AddScoped<IUserProfileRepository, UserProfileRepository>();
                 services.AddScoped<ICategoryService, CategoryService>();
                 services.AddScoped<ICategoryRepository, CategoryRepository>();
-
+                services.AddScoped<IImageService, ImageService>();
+                services.AddScoped<IAuctionService, AuctionService>();
+                services.AddScoped<IAuctionRepository, AuctionRepository>();
             });
         }
     }

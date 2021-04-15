@@ -1,4 +1,4 @@
-﻿@model BargainNet.WebApp.ModelView.CreateProfileView
+﻿@model BargainNet.Core.Entities.UserProfile
 
 @{
     ViewData["Title"] = "Create";
@@ -12,10 +12,12 @@
 <hr />
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create">
+        <form enctype="multipart/form-data" asp-action="Create">
             <div class="d-flex">
                 <div class="col-md-6">
-                    <input class="custom-checkbox" id="legalPerson" type="checkbox" name="personType" value="2" data-toggle="collapse" data-parent="#people" href="#legalPerson">
+                    <input class="" id="naturalPerson" type="radio" name="personType" value="0" data-toggle="collapse" data-parent="#people" href="#naturalPerson">
+                    <label for="naturalPerson">Pessoa Fisica</label>
+                    <input class="" id="legalPerson" type="radio" name="personType" value="1" data-toggle="collapse" data-parent="#people" href="#legalPerson">
                     <label for="legalPerson">Pessoa Jurídica</label>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
@@ -25,16 +27,16 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="ProfilePic" class="control-label"></label>
-                        <input asp-for="ProfilePic" class="form-control" />
+                        <input type="file" accept="image/*" name="profilePic" class="form-control" />
                         <span asp-validation-for="ProfilePic" class="text-danger"></span>
                     </div>
                     <div class="panel-group" id="people">
-                        <div id="naturalPersonPanel" class="panel-collapse">
+                        <div id="naturalPersonPanel" class="panel-collapse collapse ">
                             <div class="panel-body">
                                 <partial name="~/Views/UserProfiles/NaturalPerson.cshtml" />
                             </div>
                         </div>
-                        <div id="legalPersonPanel" class="panel-collapse">
+                        <div id="legalPersonPanel" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <partial name="~/Views/UserProfiles/LegalPerson.cshtml" />
                             </div>
@@ -48,10 +50,7 @@
             
                 @foreach (BargainNet.Core.Entities.Category category in categories)
                 {
-                    <div class="btn btn-danger">
-                    <input class="custom-checkbox rounded" type="checkbox" value="@category.Id" name="interests" class="btn btn-secondary active" />
-                    @category.Name
-                    </div>
+                    <partial name="~/Views/Shared/_CategoryPartial.cshtml" model="category"/>
                 }
             
             <div class="form-group">
@@ -65,12 +64,12 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        $('#legalPerson').change(function (e) {
+        $('#naturalPerson,#legalPerson').on('click', function (e) {
             e.stopPropagation();
-            if (!this.checked) {
-                $('#naturalPersonPanel').collapse('show');
+            if (this.id == 'naturalPerson') {
                 $('#legalPersonPanel').collapse('hide');
-            } else {
+                $('#naturalPersonPanel').collapse('show');
+            } else if (this.id == 'legalPerson') {
                 $('#naturalPersonPanel').collapse('hide');
                 $('#legalPersonPanel').collapse('show');
             }

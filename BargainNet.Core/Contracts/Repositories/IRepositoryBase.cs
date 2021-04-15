@@ -12,7 +12,7 @@ namespace BargainNet.Core.Contracts.Repositories
         Task AddAsync(T obj);
         Task UpdateAsync(T obj);
         Task DeleteAsync(int objId);
-        Task<T> GetByIdAsync(string objId);
+        Task<T> GetByIdAsync(Guid objId);
         Task<List<T>> FindAllAssync();
     }
 }

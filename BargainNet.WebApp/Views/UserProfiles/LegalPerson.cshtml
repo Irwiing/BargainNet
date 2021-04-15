@@ -1,23 +1,23 @@
-﻿@model BargainNet.WebApp.ModelView.CreateProfileView
+﻿@model BargainNet.Core.Entities.UserProfile
 
 <h4>LegalPerson</h4>
 <hr />
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="form-group">
-    <label asp-for="CompanyName" class="control-label"></label>
-    <input asp-for="CompanyName" class="form-control" />
-    <span asp-validation-for="CompanyName" class="text-danger"></span>
+    <label asp-for="LegalPerson.CompanyName" class="control-label"></label>
+    <input asp-for="LegalPerson.CompanyName" class="form-control" />
+    <span asp-validation-for="LegalPerson.CompanyName" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="TradeName" class="control-label"></label>
-    <input asp-for="TradeName" class="form-control" />
-    <span asp-validation-for="TradeName" class="text-danger"></span>
+    <label asp-for="LegalPerson.TradeName" class="control-label"></label>
+    <input asp-for="LegalPerson.TradeName" class="form-control" />
+    <span asp-validation-for="LegalPerson.TradeName" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="DocumentPic" class="control-label"></label>
-    <input asp-for="DocumentPic" class="form-control" />
-    <span asp-validation-for="DocumentPic" class="text-danger"></span>
+    <label asp-for="LegalPerson.DocumentPic" class="control-label"></label>
+    <input asp-for="LegalPerson.DocumentPic" type="file" accept="image/*" name="ProfilePic" class="form-control" />
+    <span asp-validation-for="LegalPerson.DocumentPic" class="text-danger"></span>
 </div>
 
 

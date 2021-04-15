@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BargainNet.Core.Contracts.Repositories
 {
-    public interface IUserProfileRepository : IRepositoryBase<UserProfile>
+    public interface IAuctionRepository : IRepositoryBase<AdAuction>
     {
     }
 }

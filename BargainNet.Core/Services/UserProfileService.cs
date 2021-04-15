@@ -25,28 +25,18 @@ namespace BargainNet.Core.Services
             _userProfileRepository = userProfileRepository;
         }
 
-        public async Task<bool> CreateProfile(NaturalPerson userProfile, string userName)
+        public async Task<bool> CreateProfile(UserProfile userProfile, string userName)
         {
-            var user = await _userService.GetUserByName(userName);
+            var user = await GetProfile(userName);
 
-            user.NaturalPerson = userProfile;
+            user.UserProfile = userProfile;
             if (await _userService.UpdateUser(user))
             {
                 return true;
             }
             return false;
         }
-        public async Task<bool> CreateProfile(LegalPerson userProfile, string userName)
-        {
-            var user = await _userService.GetUserByName(userName);
 
-            user.LegalPerson = userProfile;
-            if (await _userService.UpdateUser(user))
-            {
-                return true;
-            }
-            return false;
-        }
         public Task<List<Category>> GetCategories()
         {
             return _categoryService.GetCategories();
@@ -54,7 +44,18 @@ namespace BargainNet.Core.Services
 
         public async Task<User> GetProfile(string userName)
         {
-            return await _userService.GetUserByName(userName);
+            return await _userService.GetUser(userName);
+        }
+
+        public async Task<bool> HasSlots(string userName)
+        {
+            var user = await GetProfile(userName);
+
+            if (user.UserProfile.AdAuctions.Count < user.UserProfile.TotalSlotsAd)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

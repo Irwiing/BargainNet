@@ -1,4 +1,4 @@
-﻿using BargainNet.Core.Entities;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BargainNet.Core.Contracts.Services
 {
-    public interface ICategoryService
+    public interface IImageService
     {
-        Task<List<Category>> GetCategories();
-        Task<Category> GetCategory(Guid id);
+        string ConvertImgToString(IFormFile image);
+        
     }
 }

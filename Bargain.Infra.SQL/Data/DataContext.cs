@@ -17,23 +17,25 @@ namespace BargainNet.Infra.SQL.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<User>().HasOne(u => u.LegalPerson);
-            builder.Entity<User>().HasOne(u => u.NaturalPerson);
+            builder.Entity<User>().HasOne(u => u.UserProfile);
+            builder.Entity<User>().HasOne(u => u.UserProfile);
             builder.Entity<Category>().HasMany(c => c.UserProfiles);
+            builder.Entity<UserProfile>().HasOne(up => up.LegalPerson);
+            builder.Entity<UserProfile>().HasOne(up => up.NaturalPerson);
             builder.Entity<UserProfile>().HasMany(up => up.Interests);
-            builder.Entity<UserProfile>()
-                .HasDiscriminator<string>("type")
-                .HasValue<LegalPerson>("legal_person")
-                .HasValue<NaturalPerson>("natural_person");
             builder.Entity<UserProfile>().HasOne(up => up.Address);
+            builder.Entity<UserProfile>().HasMany(up => up.AdAuctions);
+            builder.Entity<AdAuction>().HasOne(aa => aa.Category);
+            builder.Entity<AdAuction>().HasOne(aa => aa.AdAcutionSettings);
+            builder.Entity<AdAuction>().HasMany(aa => aa.Offers);
 
             base.OnModelCreating(builder);
 
         }
         public DbSet<User> UserPerson { get; set; }
-        public DbSet<NaturalPerson> NaturalPeople { get; set; }
-        public DbSet<LegalPerson> LegalPeople { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<AdAuction> Auctions { get; set; }
     }
 }

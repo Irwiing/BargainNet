@@ -37,21 +37,25 @@ namespace BargainNet.Infra.SQL.Repositories
 
         public async Task<User> GetByIdAsync(string userId)
         {
-          var pessoa = await _dataContext.UserPerson.Include(up => up.NaturalPerson).FirstOrDefaultAsync(u => u.Id == userId);
-            if(pessoa.NaturalPerson == null)
-            {
-               return await _dataContext.UserPerson.Include(up => up.LegalPerson).FirstOrDefaultAsync(u => u.Id == userId);
-            }
+          var pessoa = await _dataContext.UserPerson
+                .Include(up => up.UserProfile)
+                .Include(u => u.UserProfile.NaturalPerson)
+                .Include(u => u.UserProfile.LegalPerson)
+                .Include(up => up.UserProfile.AdAuctions)
+                .Include(up => up.UserProfile.Interests)
+                .Include(up => up.UserProfile.PaydPackages)
+                .FirstOrDefaultAsync(u => u.NormalizedUserName == userId.ToUpper());
+            
             return pessoa;
         }
 
         public async Task<User> GetByUserNameAsync(string objUserName)
         {
-            var pessoa = await _dataContext.UserPerson.Include(up => up.NaturalPerson).FirstOrDefaultAsync(u => u.NormalizedUserName == objUserName.ToUpper());
-            if (pessoa.NaturalPerson == null)
-            {
-                return await _dataContext.UserPerson.Include(up => up.LegalPerson).FirstOrDefaultAsync(u => u.NormalizedUserName == objUserName.ToUpper());
-            }
+            var pessoa = await _dataContext.UserPerson
+                .Include(u => u.UserProfile)
+                .Include(u => u.UserProfile.NaturalPerson)
+                .Include(u => u.UserProfile.LegalPerson).FirstOrDefaultAsync(u => u.NormalizedUserName == objUserName.ToUpper());
+            
             return pessoa;
         }
 

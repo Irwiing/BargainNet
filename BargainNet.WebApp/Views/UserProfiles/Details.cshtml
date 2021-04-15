@@ -2,31 +2,46 @@
 
 @{
     ViewData["Title"] = "Details";
+    List<BargainNet.Core.Entities.AdAuction> myAuctions = ViewData["MyAuctions"] as List<BargainNet.Core.Entities.AdAuction>;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="container d-flex justify-content-between align-content-center">
 
-<h1>Details</h1>
 
-<div>
-    <h4>UserProfile</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
+    <div class="text-center img rounded-circle bg-dark">
+        <img class="image-profile  rounded-circle" src="@Model.UserProfile.ProfilePic" />
+    </div>
+    @if (Model.UserProfile.LegalPerson != null)
+    {
+        <div class="">
+            <h4 class="display-4">@Model.UserProfile.LegalPerson.CompanyName</h4>
+        </div>
+    }
+    else if (Model.UserProfile.NaturalPerson != null)
+    {
+        <div class="d-flex align-content-center">
+            <h4 class="display-4">@Model.UserProfile.NaturalPerson.FullName</h4>
+        </div>
+    }
 
-    </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("Criar novo leilão", "Create", "Auctions", null, new { @class = "btn btn-danger" })
+    <div class="d-flex overflow-auto">
+        @foreach (var item in Model.UserProfile.AdAuctions)
+        {
+            <div class="col-4">
+                <partial name="~/Views/Shared/_AuctionCard.cshtml" model="item" />
+            </div>
+        }
+    </div>
+
+    <div class="d-flex overflow-auto">
+        @foreach (BargainNet.Core.Entities.AdAuction auction in myAuctions)
+        {
+            <div class="col-4">
+                <partial name="~/Views/Shared/_AuctionCard.cshtml" model="auction" />
+            </div>
+        }
+    </div>
 </div>

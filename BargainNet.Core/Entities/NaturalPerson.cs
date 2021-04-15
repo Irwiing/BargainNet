@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace BargainNet.Core.Entities
 {
-    public class NaturalPerson : UserProfile
+    public class NaturalPerson : EntityBase
     {
-        public NaturalPerson()
-        {
-            TotalSlotsAd = Constants.NaturalPersonFreeSlots;
-        }
         public string FullName { get; set; }
         public DateTime? BirthDate { get; set; }
     }

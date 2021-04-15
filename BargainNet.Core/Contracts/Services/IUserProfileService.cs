@@ -10,9 +10,9 @@ namespace BargainNet.Core.Contracts.Services
 {
     public interface IUserProfileService
     {
-        Task<bool> CreateProfile(NaturalPerson userProfile, string userName);
-        Task<bool> CreateProfile(LegalPerson userProfile, string userName);
+        Task<bool> CreateProfile(UserProfile userProfile, string userName);
         Task<User> GetProfile(string id);
         Task<List<Category>> GetCategories();
+        Task<bool> HasSlots(string userName);
     }
 }

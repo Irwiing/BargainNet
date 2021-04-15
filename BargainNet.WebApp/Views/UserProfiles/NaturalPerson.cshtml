@@ -1,18 +1,18 @@
-﻿@model BargainNet.WebApp.ModelView.CreateProfileView
+﻿@model BargainNet.Core.Entities.UserProfile
 
 <h4>NaturalPerson</h4>
 <hr />
 
 
 <div class="form-group">
-    <label asp-for="FullName" class="control-label"></label>
-    <input asp-for="FullName" class="form-control" />
-    <span asp-validation-for="FullName" class="text-danger"></span>
+    <label asp-for="NaturalPerson.FullName" class="control-label"></label>
+    <input asp-for="NaturalPerson.FullName" class="form-control" />
+    <span asp-validation-for="NaturalPerson.FullName" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="BirthDate" class="control-label"></label>
-    <input asp-for="BirthDate" class="form-control" />
-    <span asp-validation-for="BirthDate" class="text-danger"></span>
+    <label asp-for="NaturalPerson.BirthDate" class="control-label"></label>
+    <input asp-for="NaturalPerson.BirthDate" class="form-control" />
+    <span asp-validation-for="NaturalPerson.BirthDate" class="text-danger"></span>
 </div>
 
 @section Scripts {

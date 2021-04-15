@@ -9,7 +9,7 @@ namespace BargainNet.Core.Entities
 {
     public class User : IdentityUser
     {
-        public virtual NaturalPerson NaturalPerson { get; set; }
-        public virtual LegalPerson LegalPerson { get; set; }
+        public virtual UserProfile UserProfile { get; set; }
+        
     }
 }

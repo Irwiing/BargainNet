@@ -11,6 +11,7 @@ using BargainNet.Core.Contracts.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using BargainNet.WebApp.ModelView;
+using Microsoft.AspNetCore.Http;
 
 namespace BargainNet.WebApp.Controllers
 {
@@ -18,22 +19,25 @@ namespace BargainNet.WebApp.Controllers
     {
         private readonly IUserProfileService _userProfileService;
         private readonly ICategoryService _categoryService;
+        private readonly IImageService _imageService;
+        private readonly IAuctionService _auctionService;
         public UserProfilesController(IUserProfileService userProfileService, 
-            ICategoryService categoryService)
+            ICategoryService categoryService,
+            IImageService imageService,
+            IAuctionService auctionService)
         {
             _categoryService = categoryService;
             _userProfileService = userProfileService;
+            _imageService = imageService;
+            _auctionService = auctionService;
         }
 
-        // GET: UserProfiles
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Details()
         {
-            return NotFound();
-        }
-
-        // GET: UserProfiles/Details/5
-        public async Task<IActionResult> Details(string userName)
-        {
+            var userName = User.Identity.Name;
+            var auctions = await _auctionService.GetUserInterestAuctions(userName);
+            ViewData["myAuctions"] = auctions;
             return View(await _userProfileService.GetProfile(userName));
         }
 
@@ -46,16 +50,24 @@ namespace BargainNet.WebApp.Controllers
             return View();
         }
 
-        // POST: UserProfiles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create(CreateProfileView createProfile, string[] interests, bool isLegalPerson)
+        public async Task<IActionResult> Create(UserProfile createProfile, Guid[] interests, int personType, IFormFile profilePic)
         {
+            bool isLegalPerson = personType == 0 ? false : true;
             if (ModelState.IsValid)
             {
+                createProfile.ProfilePic = _imageService.ConvertImgToString(profilePic);
+                if (isLegalPerson)
+                {
+                    createProfile.NaturalPerson = null;
+                    createProfile.TotalSlotsAd = Constants.LegalPersonFreeSlots;
+                }else
+                {
+                    createProfile.LegalPerson = null;
+                    createProfile.TotalSlotsAd = Constants.NaturalPersonFreeSlots;
+                }
                 bool created = false;
                 var userName = User.Identity;
                 List<Category> interestCategories = new List<Category>();
@@ -63,75 +75,13 @@ namespace BargainNet.WebApp.Controllers
                 {
                     interestCategories.Add(await _categoryService.GetCategory(interest));
                 }
-                if (isLegalPerson)
-                {
-                    var legalPerson = new LegalPerson
-                    {
-                        Document = createProfile.Document,
-                        ProfilePic = createProfile.ProfilePic,
-                        Address = createProfile.Address,
-                        CompanyName = createProfile.CompanyName,
-                        TradeName = createProfile.TradeName,
-                        DocumentPic = createProfile.Document,
-                        Interests = interestCategories
-                    };
-
-                    created = await _userProfileService.CreateProfile(legalPerson, userName.Name);
-                }
-                else
-                {
-                    var naturalPerson = new NaturalPerson
-                    {
-                        Document = createProfile.Document,
-                        ProfilePic = createProfile.ProfilePic,
-                        Address = createProfile.Address,
-                        FullName = createProfile.FullName,
-                        BirthDate = createProfile.BirthDate,
-                        Interests = interestCategories
-                    };
-                    created = await _userProfileService.CreateProfile(naturalPerson, userName.Name);
-                }
+                createProfile.Interests = interestCategories;
+                    created = await _userProfileService.CreateProfile(createProfile, userName.Name);
 
                 if(created) return RedirectToAction(nameof(Details), new { userName = userName.Name });
 
             }
             return View(createProfile);
-        }
-
-
-        // GET: UserProfiles/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            return NotFound();
-        }
-
-        // POST: UserProfiles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Document,ProfilePic,BarganhaPoints,TotalSlotsAd,Status,Id")] UserProfile userProfile)
-        {
-            return NotFound();
-        }
-
-        // GET: UserProfiles/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            return NotFound();
-        }
-
-        // POST: UserProfiles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            return NotFound();
-        }
-
-        private bool UserProfileExists(Guid id)
-        {
-            return false;
         }
     }
 }

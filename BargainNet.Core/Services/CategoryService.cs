@@ -21,7 +21,7 @@ namespace BargainNet.Core.Services
            return await _categoryRepository.FindAllAssync();
         }
 
-        public async Task<Category> GetCategory(string id)
+        public async Task<Category> GetCategory(Guid id)
         {
            return await _categoryRepository.GetByIdAsync(id);
         }

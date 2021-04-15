@@ -1,13 +1,14 @@
 ﻿using BargainNet.Core.Contracts.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BargainNet.Core.Entities
 {
-    public abstract class UserProfile : EntityBase
+    public class UserProfile : EntityBase
     {
         public string Document { get; set; }
         public virtual Address Address { get; set; }
@@ -17,6 +18,9 @@ namespace BargainNet.Core.Entities
         public Status Status { get; set; }
         public virtual IEnumerable<Category> Interests { get; set; }
         public virtual IEnumerable<PaydPackage> PaydPackages { get; set; }
-        public virtual IEnumerable<AdAuction> AdAuctions { get; set; }
+        public virtual List<AdAuction> AdAuctions { get; set; }
+        public virtual LegalPerson LegalPerson { get; set; }
+        public virtual NaturalPerson NaturalPerson { get; set; }
+
     }
 }

@@ -30,10 +30,16 @@ namespace BargainNet.Core.Services
         {
             var user = await _userRepository.GetByUserNameAsync(userName);
 
-            if (user.NaturalPerson == null && user.LegalPerson == null)
-            {
-                return false;
-            }
+            if (user.UserProfile == null) return false;
+            
+            return true;
+        }
+        public async Task<bool> IsLegalPerson(string userName)
+        {
+            var user = await _userRepository.GetByUserNameAsync(userName);
+            
+            if (user.UserProfile.LegalPerson == null) return false;
+
             return true;
         }
         public async Task<bool> UpdateUser(User user)
