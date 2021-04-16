@@ -49,9 +49,9 @@ namespace BargainNet.WebApp.Controllers
             if (auction == null) return View("_OfferList");
             return View("_OfferList", auction.Offers);
         }
-        public ActionResult CreateOffer(Guid idAuction)
+        public ActionResult CreateOffer(Guid id)
         {
-            ViewData["idAuction"] = idAuction;
+            ViewData["idAuction"] = id;
             return View("_CreateOffer");
         }
         [HttpPost]
@@ -59,7 +59,7 @@ namespace BargainNet.WebApp.Controllers
         public async Task<ActionResult> CreateOffer(Offer offer, Guid idAuction)
         {
             await _auctionService.CreateOffer(offer, idAuction);
-            return RedirectToAction("Details", new { id = idAuction });
+            return Ok();
         }
         // GET: AuctionsController/Create
         public async Task<ActionResult> Create()
@@ -71,7 +71,7 @@ namespace BargainNet.WebApp.Controllers
                 ViewData["Categories"] = categories;
                 return View();
             }
-            return RedirectToAction("Details", "UserProfiles", new { userName });
+            return RedirectToAction("Details", "UserProfiles");
         }
 
         // POST: AuctionsController/Create
@@ -83,6 +83,7 @@ namespace BargainNet.WebApp.Controllers
             var category = await _categoryService.GetCategory(auction.Category.Id);
             auction.Category = category;
             auction.AdPic = _imageService.ConvertImgToString(adPic);
+            auction.AdAcutionSettings = new AdAcutionSettings();
             await _auctionService.CreateAuction(userName, auction);
 
             return RedirectToAction("Details", "UserProfiles", new { userName });

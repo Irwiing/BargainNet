@@ -94,7 +94,7 @@ namespace BargainNet.WebApp.Areas.Identity.Pages.Account
                         _logger.LogInformation("User logged in.");
                         return RedirectToAction("Create", "UserProfiles");
                     }
-                    return RedirectToAction("Details", "UserProfiles", new { userName = Input.UserName });
+                    return RedirectToAction("Details", "UserProfiles");
                 }
                 if (result.RequiresTwoFactor)
                 {

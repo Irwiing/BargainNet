@@ -9,7 +9,7 @@
 
 
     <div class="text-center img rounded-circle bg-dark">
-        <img class="image-profile  rounded-circle" src="@Model.UserProfile.ProfilePic" />
+        <img class="image-profile rounded-circle" src="@Model.UserProfile.ProfilePic" />
     </div>
     @if (Model.UserProfile.LegalPerson != null)
     {
@@ -26,11 +26,11 @@
 
 </div>
 <div>
-        <div class="d-flex justify-content-between">
-            <h4>Meus anuncios</h4>
-            @Html.ActionLink("Criar novo leilão", "Create", "Auctions", null, new { @class = "btn btn-danger" })
-        </div>
-        <hr />
+    <div class="d-flex justify-content-between">
+        <h4>Meus anuncios</h4>
+        @Html.ActionLink("Criar novo leilão", "Create", "Auctions", null, new { @class = "btn btn-danger" })
+    </div>
+    <hr />
     <div class="d-flex overflow-auto">
         @foreach (var item in Model.UserProfile.AdAuctions)
         {
@@ -40,9 +40,9 @@
         }
     </div>
 
+    <h4>Meus interesses</h4>
+    <hr />
     <div class="d-flex overflow-auto">
-        <h4>Meus interesses</h4>
-        <hr />
         @foreach (BargainNet.Core.Entities.AdAuction auction in myAuctions)
         {
             <div class="col-4">
