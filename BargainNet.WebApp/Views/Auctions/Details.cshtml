@@ -11,17 +11,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="offerModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="offerModalLabel">Dar lance</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div id="offer" class="modal-body">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -32,7 +28,7 @@
             <h4>AdAuction</h4>
             @if (isOwner)
             {
-                @Html.ActionLink("Finalizar", "", "", null, new { @class = "btn btn-danger" })
+                @Html.ActionLink("Finalizar", "EndAuction", new { idAuction = @Model.Id } , new { @class = "btn btn-danger" })
             }
         </div>
         <input id="idAuct" type="hidden" name="idAuction" value="@Model.Id" />
@@ -84,7 +80,6 @@
                 <button type="button" onclick="createOffer()" class="btn btn-primary" data-toggle="modal" data-target="#offerModal">
                     Dar lance
                 </button>
-                @Html.ActionLink("Dar lance", "CreateOffer", new { id = Model.Id }, new { @class = "btn btn-danger" })
             }
         </div>
         <hr />
@@ -108,7 +103,7 @@
                 }
             });
         }
-       /* const createOffer = async () => {
+       const createOffer = async () => {
             await $.ajax({
                 type: 'GET',
                 url: `/Auctions/CreateOffer/${id}`,
@@ -119,7 +114,7 @@
                     $('#offer').html(data);
                 }
             });
-        }*/
+        }
         $(document).ready(function () {
             setInterval(updateOffer, 5050);
         });

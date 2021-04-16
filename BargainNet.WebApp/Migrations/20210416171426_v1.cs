@@ -348,7 +348,7 @@ namespace BargainNet.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Offer",
+                name: "AllOffers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -358,20 +358,30 @@ namespace BargainNet.WebApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Offer", x => x.Id);
+                    table.PrimaryKey("PK_AllOffers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Offer_AspNetUsers_UserId",
+                        name: "FK_AllOffers_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Offer_Auctions_AdAuctionId",
+                        name: "FK_AllOffers_Auctions_AdAuctionId",
                         column: x => x.AdAuctionId,
                         principalTable: "Auctions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AllOffers_AdAuctionId",
+                table: "AllOffers",
+                column: "AdAuctionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AllOffers_UserId",
+                table: "AllOffers",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -438,16 +448,6 @@ namespace BargainNet.WebApp.Migrations
                 column: "UserProfilesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offer_AdAuctionId",
-                table: "Offer",
-                column: "AdAuctionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Offer_UserId",
-                table: "Offer",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PaydPackage_UserProfileId",
                 table: "PaydPackage",
                 column: "UserProfileId");
@@ -471,6 +471,9 @@ namespace BargainNet.WebApp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AllOffers");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -489,19 +492,16 @@ namespace BargainNet.WebApp.Migrations
                 name: "CategoryUserProfile");
 
             migrationBuilder.DropTable(
-                name: "Offer");
+                name: "PaydPackage");
 
             migrationBuilder.DropTable(
-                name: "PaydPackage");
+                name: "Auctions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Auctions");
 
             migrationBuilder.DropTable(
                 name: "AdAcutionSettings");

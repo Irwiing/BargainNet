@@ -40,15 +40,23 @@ namespace BargainNet.Core.Services
             List<AdAuction> interestAuction = new List<AdAuction>();
             var allAuctions = await _auctionRepository.FindAllAssync();
             var user = await _userService.GetUser(userId);
-            return allAuctions.FindAll(a => user.UserProfile.Interests.Contains(a.Category));
+            return allAuctions.FindAll(a => user.UserProfile.Interests.Contains(a.Category) && a.AdAcutionSettings.Status == Status.Active && !user.UserProfile.AdAuctions.Contains(a));
         }
 
-        public async Task CreateOffer(Offer offer, Guid idAuction)
+        public async Task CreateOffer(Offer offer, Guid idAuction, string idUser)
         {
             var auction = await _auctionRepository.GetByIdAsync(idAuction);
+            offer.User = await _userService.GetUser(idUser);
             auction.Offers.Add(offer);
             await _auctionRepository.UpdateAsync(auction);
         }
+        public async Task EndAuction(Guid idAuction, string idUser)
+        {
+            var user = await _userService.GetUser(idUser);
+            var auction = await _auctionRepository.GetByIdAsync(idAuction);
+            auction.AdAcutionSettings.Status = Status.Inactive;
+
+            await _userService.UpdateUser(user);
+        }
     }
-    
 }

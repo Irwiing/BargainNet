@@ -37,16 +37,16 @@ namespace BargainNet.Infra.SQL.Repositories
 
         public async Task<User> GetByIdAsync(string userId)
         {
-          var pessoa = await _dataContext.UserPerson
-                .Include(up => up.UserProfile)
-                .Include(u => u.UserProfile.NaturalPerson)
-                .Include(u => u.UserProfile.LegalPerson)
+            return await _dataContext.UserPerson
+                .Include(u => u.UserProfile)
+                .Include(up => up.UserProfile.NaturalPerson)
+                .Include(up => up.UserProfile.LegalPerson)
                 .Include(up => up.UserProfile.AdAuctions)
                 .Include(up => up.UserProfile.Interests)
                 .Include(up => up.UserProfile.PaydPackages)
+                .Include(up => up.UserProfile.Address)
                 .FirstOrDefaultAsync(u => u.Id == userId);
             
-            return pessoa;
         }
 
         public async Task<User> GetByUserNameAsync(string objUserName)

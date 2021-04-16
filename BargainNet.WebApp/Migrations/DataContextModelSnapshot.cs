@@ -184,7 +184,7 @@ namespace BargainNet.WebApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offer");
+                    b.ToTable("AllOffers");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.PaydPackage", b =>

@@ -69,16 +69,16 @@ namespace BargainNet.WebApp.Controllers
                     createProfile.TotalSlotsAd = Constants.NaturalPersonFreeSlots;
                 }
                 bool created = false;
-                var userName = User.Identity;
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 List<Category> interestCategories = new List<Category>();
                 foreach (var interest in interests)
                 {
                     interestCategories.Add(await _categoryService.GetCategory(interest));
                 }
                 createProfile.Interests = interestCategories;
-                    created = await _userProfileService.CreateProfile(createProfile, userName.Name);
+                    created = await _userProfileService.CreateProfile(createProfile, userId);
 
-                if(created) return RedirectToAction(nameof(Details), new { userName = userName.Name });
+                if(created) return RedirectToAction(nameof(Details));
 
             }
             return View(createProfile);

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BargainNet.WebApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210414140953_v1")]
+    [Migration("20210416171426_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,7 +186,7 @@ namespace BargainNet.WebApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offer");
+                    b.ToTable("AllOffers");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.PaydPackage", b =>

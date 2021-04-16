@@ -1,4 +1,6 @@
 ﻿using BargainNet.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,9 +19,13 @@ namespace BargainNet.WebApp.Controllers
         {
             _logger = logger;
         }
-
+        
         public IActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Details", "UserProfiles");
+            }
             return View();
         }
 
