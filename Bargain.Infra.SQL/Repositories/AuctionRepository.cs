@@ -28,14 +28,14 @@ namespace BargainNet.Infra.SQL.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<AdAuction>> FindAllAssync()
+        public async Task<List<AdAuction>> FindAllAsync()
         {
-            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).ToListAsync();
+            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).ThenInclude(offer => offer.User).ToListAsync();
         }
 
         public async Task<AdAuction> GetByIdAsync(Guid objId)
         {
-            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).FirstOrDefaultAsync(a => a.Id == objId) ;
+            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).Include("Offers.User").FirstOrDefaultAsync(a => a.Id == objId) ;
 
         }
 

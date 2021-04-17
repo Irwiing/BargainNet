@@ -373,6 +373,66 @@ namespace BargainNet.WebApp.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Chats",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AuctionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    AuctionOwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    AuctionWinnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chats_AspNetUsers_AuctionOwnerId",
+                        column: x => x.AuctionOwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Chats_AspNetUsers_AuctionWinnerId",
+                        column: x => x.AuctionWinnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Chats_Auctions_AuctionId",
+                        column: x => x.AuctionId,
+                        principalTable: "Auctions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SendDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ChatId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AllOffers_AdAuctionId",
                 table: "AllOffers",
@@ -448,6 +508,31 @@ namespace BargainNet.WebApp.Migrations
                 column: "UserProfilesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Chats_AuctionId",
+                table: "Chats",
+                column: "AuctionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_AuctionOwnerId",
+                table: "Chats",
+                column: "AuctionOwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_AuctionWinnerId",
+                table: "Chats",
+                column: "AuctionWinnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_ChatId",
+                table: "Messages",
+                column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderId",
+                table: "Messages",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PaydPackage_UserProfileId",
                 table: "PaydPackage",
                 column: "UserProfileId");
@@ -492,16 +577,22 @@ namespace BargainNet.WebApp.Migrations
                 name: "CategoryUserProfile");
 
             migrationBuilder.DropTable(
-                name: "PaydPackage");
+                name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Auctions");
+                name: "PaydPackage");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Chats");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Auctions");
 
             migrationBuilder.DropTable(
                 name: "AdAcutionSettings");

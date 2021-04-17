@@ -1,15 +1,22 @@
-﻿using BargainNet.Core.Entities;
+﻿using BargainNet.Core.Contracts.Services;
+using BargainNet.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BargainNet.WebApp.Controllers
 {
     public class ChatsController : Controller
     {
+        private readonly IChatService _chatService;
+        public ChatsController(IChatService chatService)
+        {
+            _chatService = chatService;
+        }
         // GET: ChatsController
         public ActionResult Index()
         {
@@ -17,46 +24,36 @@ namespace BargainNet.WebApp.Controllers
         }
 
         // GET: ChatsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(Guid id)
         {
-            return View();
+            return View(await _chatService.GetChat(id));
         }
 
         // POST: ChatsController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(string idOwner,AdAuction auction)
+        public async Task<ActionResult> Create(string idOwner, Guid auctionId)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var idChat = await _chatService.CreateChat(idOwner, auctionId);
+            return RedirectToAction(nameof(Details), new { id = idChat });
         }
 
-        // GET: ChatsController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> GetMessages(Guid id)
         {
-            return View();
+            var chat = await _chatService.GetChat(id);
+            if(chat == null)
+            {
+                return View("_ChatMessages");
+            }
+            return View("_ChatMessages", chat.Messages);
         }
-
-        // POST: ChatsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(Guid idChat, string message)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _chatService.SaveMessage(idChat, message, userId);
+            return RedirectToAction(nameof(Details), new { id = idChat });
         }
+
 
         // GET: ChatsController/Delete/5
         public ActionResult Delete(int id)

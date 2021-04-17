@@ -28,7 +28,7 @@ namespace BargainNet.Infra.SQL.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<Category>> FindAllAssync()
+        public async Task<List<Category>> FindAllAsync()
         {
             return await _dataContext.Categories.ToListAsync();
         }

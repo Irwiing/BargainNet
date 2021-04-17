@@ -1,0 +1,55 @@
+﻿@model BargainNet.Core.Entities.Chat
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+<div>
+    <h1>Chat</h1>
+    <div class="chat-panel panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-paper-plane fa-fw"></i>
+        </div>
+        <div id="chat" class="panel-body overflow-auto" style="height:250px;">
+        </div>
+        <div class="panel-footer">
+            <form asp-action="Edit">
+                <input id="idChat" type="hidden" name="idChat" value="@Model.Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="input-group" style="align-items: center">
+                    <input class="form-control" name="message" placeholder="Type your message here..." />
+
+                    <span class="input-group-btn">
+                        <input type="submit" value="Enviar" class="btn btn-primary" onclick="scrollDown()" />
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        const id = $('#idChat').val()
+        const updateMessage = async () => {
+            await $.ajax({
+                type: 'GET',
+                url: `/Chats/GetMessages/${id}`,
+                dataType: 'html',
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#chat').html(data);
+                }
+            });
+        }
+        
+        $(document).ready(function () {
+            setInterval(updateMessage, 5050);
+        });
+    </script>
+}
+

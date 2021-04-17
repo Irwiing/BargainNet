@@ -73,7 +73,7 @@ namespace BargainNet.WebApp.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _auctionService.EndAuction(id, userId);
-            return RedirectToAction("Details", "UserProfiles");
+            return RedirectToAction("Create", "Chats", new { idOwner = userId, auctionId = id });
         }
         // GET: AuctionsController/Create
         public async Task<ActionResult> Create()

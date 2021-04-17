@@ -43,6 +43,7 @@ namespace BargainNet.Infra.SQL.Data
         public DbSet<AdAuction> Auctions { get; set; }
         public DbSet<Offer> AllOffers { get; set; }
         public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatMessage> Messages{ get; set; }
     }
 }
 

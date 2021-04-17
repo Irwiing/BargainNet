@@ -28,7 +28,7 @@ namespace BargainNet.Core.Services
         public async Task<List<AdAuction>> GetAuctions()
         {
            
-            return  await _auctionRepository.FindAllAssync();
+            return  await _auctionRepository.FindAllAsync();
         }
         public async Task<AdAuction> GetAuction(Guid auctionId)
         {
@@ -38,7 +38,7 @@ namespace BargainNet.Core.Services
         public async Task<List<AdAuction>> GetUserInterestAuctions(string userId)
         {
             List<AdAuction> interestAuction = new List<AdAuction>();
-            var allAuctions = await _auctionRepository.FindAllAssync();
+            var allAuctions = await _auctionRepository.FindAllAsync();
             var user = await _userService.GetUser(userId);
             return allAuctions.FindAll(a => user.UserProfile.Interests.Contains(a.Category) && a.AdAcutionSettings.Status == Status.Active && !user.UserProfile.AdAuctions.Contains(a));
         }
@@ -57,6 +57,11 @@ namespace BargainNet.Core.Services
             auction.AdAcutionSettings.Status = Status.Inactive;
 
             await _userService.UpdateUser(user);
+        }
+        public User GetWinner(AdAuction auction)
+        {
+            var winnerOffer = auction.Offers.FirstOrDefault(offer => offer.Value == auction.Offers.Max(o => o.Value));
+            return winnerOffer.User;
         }
     }
 }

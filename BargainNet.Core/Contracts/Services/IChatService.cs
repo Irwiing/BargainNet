@@ -9,6 +9,8 @@ namespace BargainNet.Core.Contracts.Services
 {
     public interface IChatService
     {
-        Task CreateChat(string ownerId, AdAuction auction);
+        Task<Guid> CreateChat(string ownerId, Guid auctionId);
+        Task<Chat> GetChat(Guid id);
+        Task SaveMessage(Guid idChat, string message, string userId);
     }
 }

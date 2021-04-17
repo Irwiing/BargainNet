@@ -30,7 +30,7 @@ namespace BargainNet.Infra.SQL.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<User>> FindAllAssync()
+        public Task<List<User>> FindAllAsync()
         {
             throw new NotImplementedException();
         }
