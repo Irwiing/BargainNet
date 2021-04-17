@@ -28,7 +28,7 @@ namespace BargainNet.Core.Services
         public async Task<List<AdAuction>> GetAuctions()
         {
            
-            return  await _auctionRepository.FindAllAssync();
+            return  await _auctionRepository.FindAllAsync();
         }
         public async Task<AdAuction> GetAuction(Guid auctionId)
         {
@@ -38,17 +38,30 @@ namespace BargainNet.Core.Services
         public async Task<List<AdAuction>> GetUserInterestAuctions(string userId)
         {
             List<AdAuction> interestAuction = new List<AdAuction>();
-            var allAuctions = await _auctionRepository.FindAllAssync();
+            var allAuctions = await _auctionRepository.FindAllAsync();
             var user = await _userService.GetUser(userId);
-            return allAuctions.FindAll(a => user.UserProfile.Interests.Contains(a.Category));
+            return allAuctions.FindAll(a => user.UserProfile.Interests.Contains(a.Category) && a.AdAcutionSettings.Status == Status.Active && !user.UserProfile.AdAuctions.Contains(a));
         }
 
-        public async Task CreateOffer(Offer offer, Guid idAuction)
+        public async Task CreateOffer(Offer offer, Guid idAuction, string idUser)
         {
             var auction = await _auctionRepository.GetByIdAsync(idAuction);
+            offer.User = await _userService.GetUser(idUser);
             auction.Offers.Add(offer);
             await _auctionRepository.UpdateAsync(auction);
         }
+        public async Task EndAuction(Guid idAuction, string idUser)
+        {
+            var user = await _userService.GetUser(idUser);
+            var auction = await _auctionRepository.GetByIdAsync(idAuction);
+            auction.AdAcutionSettings.Status = Status.Inactive;
+
+            await _userService.UpdateUser(user);
+        }
+        public User GetWinner(AdAuction auction)
+        {
+            var winnerOffer = auction.Offers.FirstOrDefault(offer => offer.Value == auction.Offers.Max(o => o.Value));
+            return winnerOffer.User;
+        }
     }
-    
 }

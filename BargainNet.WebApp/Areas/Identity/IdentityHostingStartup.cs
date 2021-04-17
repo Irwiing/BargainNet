@@ -35,6 +35,8 @@ namespace BargainNet.WebApp.Areas.Identity
                 services.AddScoped<IImageService, ImageService>();
                 services.AddScoped<IAuctionService, AuctionService>();
                 services.AddScoped<IAuctionRepository, AuctionRepository>();
+                services.AddScoped<IChatRepository, ChatRepository>();
+                services.AddScoped<IChatService, ChatService>();
             });
         }
     }

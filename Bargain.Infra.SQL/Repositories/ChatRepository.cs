@@ -1,6 +1,7 @@
 ﻿using BargainNet.Core.Contracts.Repositories;
 using BargainNet.Core.Entities;
 using BargainNet.Infra.SQL.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +10,16 @@ using System.Threading.Tasks;
 
 namespace BargainNet.Infra.SQL.Repositories
 {
-    public class UserProfileRepository : IUserProfileRepository
+    public class ChatRepository : IChatRepository
     {
         private readonly DataContext _dataContext;
-        public UserProfileRepository(DataContext dataContext)
+        public ChatRepository(DataContext dataContext)
         {
             _dataContext = dataContext;
         }
-
-        public async Task AddAsync(UserProfile obj)
+        public async Task AddAsync(Chat obj)
         {
-            await _dataContext.UserProfiles.AddAsync(obj);
+            await _dataContext.Chats.AddAsync(obj);
             await _dataContext.SaveChangesAsync();
         }
 
@@ -28,19 +28,21 @@ namespace BargainNet.Infra.SQL.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<UserProfile>> FindAllAsync()
+        public Task<List<Chat>> FindAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserProfile> GetByIdAsync(Guid objId)
+        public async Task<Chat> GetByIdAsync(Guid objId)
         {
-            throw new NotImplementedException();
+            return await _dataContext.Chats.Include(chat => chat.Messages).Include("Messages.Sender").FirstOrDefaultAsync(chat => chat.Id == objId);
+
         }
 
-        public Task UpdateAsync(UserProfile obj)
+        public async Task UpdateAsync(Chat obj)
         {
-            throw new NotImplementedException();
+            _dataContext.Chats.Update(obj);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

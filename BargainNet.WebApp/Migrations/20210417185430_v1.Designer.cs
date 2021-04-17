@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BargainNet.WebApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210414140953_v1")]
+    [Migration("20210417185430_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,62 @@ namespace BargainNet.WebApp.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("BargainNet.Core.Entities.Chat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AuctionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AuctionOwnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AuctionWinnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuctionId");
+
+                    b.HasIndex("AuctionOwnerId");
+
+                    b.HasIndex("AuctionWinnerId");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("BargainNet.Core.Entities.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ChatId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("BargainNet.Core.Entities.LegalPerson", b =>
                 {
                     b.Property<Guid>("Id")
@@ -186,7 +242,7 @@ namespace BargainNet.WebApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offer");
+                    b.ToTable("AllOffers");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.PaydPackage", b =>
@@ -488,6 +544,40 @@ namespace BargainNet.WebApp.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("BargainNet.Core.Entities.Chat", b =>
+                {
+                    b.HasOne("BargainNet.Core.Entities.AdAuction", "Auction")
+                        .WithMany()
+                        .HasForeignKey("AuctionId");
+
+                    b.HasOne("BargainNet.Core.Entities.User", "AuctionOwner")
+                        .WithMany()
+                        .HasForeignKey("AuctionOwnerId");
+
+                    b.HasOne("BargainNet.Core.Entities.User", "AuctionWinner")
+                        .WithMany()
+                        .HasForeignKey("AuctionWinnerId");
+
+                    b.Navigation("Auction");
+
+                    b.Navigation("AuctionOwner");
+
+                    b.Navigation("AuctionWinner");
+                });
+
+            modelBuilder.Entity("BargainNet.Core.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("BargainNet.Core.Entities.Chat", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId");
+
+                    b.HasOne("BargainNet.Core.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("BargainNet.Core.Entities.Offer", b =>
                 {
                     b.HasOne("BargainNet.Core.Entities.AdAuction", null)
@@ -607,6 +697,11 @@ namespace BargainNet.WebApp.Migrations
             modelBuilder.Entity("BargainNet.Core.Entities.AdAuction", b =>
                 {
                     b.Navigation("Offers");
+                });
+
+            modelBuilder.Entity("BargainNet.Core.Entities.Chat", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("BargainNet.Core.Entities.UserProfile", b =>

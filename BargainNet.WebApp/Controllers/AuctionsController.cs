@@ -49,29 +49,43 @@ namespace BargainNet.WebApp.Controllers
             if (auction == null) return View("_OfferList");
             return View("_OfferList", auction.Offers);
         }
-        public ActionResult CreateOffer(Guid idAuction)
+        public ActionResult CreateOffer(Guid id)
         {
-            ViewData["idAuction"] = idAuction;
+            ViewData["idAuction"] = id;
             return View("_CreateOffer");
         }
         [HttpPost]
-        
-        public async Task<ActionResult> CreateOffer(Offer offer, Guid idAuction)
+
+        public async Task<ActionResult> CreateOffer([Bind("Value")] Offer offer, Guid idAuction)
         {
-            await _auctionService.CreateOffer(offer, idAuction);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _auctionService.CreateOffer(offer, idAuction, userId);
             return RedirectToAction("Details", new { id = idAuction });
+        }
+        public ActionResult EndAuction(Guid idAuction)
+        {
+            ViewData["idAuction"] = idAuction;
+            return View("_EndAuction");
+        }
+        [HttpPost]
+        [ActionName("EndAuction")]
+        public async Task<ActionResult> ConfirmEndAuction(Guid id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _auctionService.EndAuction(id, userId);
+            return RedirectToAction("Create", "Chats", new { idOwner = userId, auctionId = id });
         }
         // GET: AuctionsController/Create
         public async Task<ActionResult> Create()
         {
-            var userName = User.Identity.Name;
-            if (await _userProfileService.HasSlots(userName))
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (await _userProfileService.HasSlots(userId))
             {
                 var categories = await _categoryService.GetCategories();
                 ViewData["Categories"] = categories;
                 return View();
             }
-            return RedirectToAction("Details", "UserProfiles", new { userName });
+            return RedirectToAction("Details", "UserProfiles");
         }
 
         // POST: AuctionsController/Create
@@ -79,13 +93,14 @@ namespace BargainNet.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(AdAuction auction, IFormFile adPic)
         {
-            var userName = User.Identity.Name;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var category = await _categoryService.GetCategory(auction.Category.Id);
             auction.Category = category;
             auction.AdPic = _imageService.ConvertImgToString(adPic);
-            await _auctionService.CreateAuction(userName, auction);
+            auction.AdAcutionSettings = new AdAcutionSettings();
+            await _auctionService.CreateAuction(userId, auction);
 
-            return RedirectToAction("Details", "UserProfiles", new { userName });
+            return RedirectToAction("Details", "UserProfiles");
 
         }
 
@@ -110,25 +125,5 @@ namespace BargainNet.WebApp.Controllers
             }
         }
 
-        // GET: AuctionsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AuctionsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

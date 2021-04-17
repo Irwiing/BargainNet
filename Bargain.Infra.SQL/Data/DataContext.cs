@@ -28,7 +28,11 @@ namespace BargainNet.Infra.SQL.Data
             builder.Entity<AdAuction>().HasOne(aa => aa.Category);
             builder.Entity<AdAuction>().HasOne(aa => aa.AdAcutionSettings);
             builder.Entity<AdAuction>().HasMany(aa => aa.Offers);
-
+            builder.Entity<Offer>().HasOne(o => o.User);
+            builder.Entity<Chat>().HasMany(c => c.Messages);
+            builder.Entity<Chat>().HasOne(c => c.AuctionOwner);
+            builder.Entity<Chat>().HasOne(c => c.AuctionWinner);
+            builder.Entity<Chat>().HasOne(c => c.Auction);
             base.OnModelCreating(builder);
 
         }
@@ -37,5 +41,9 @@ namespace BargainNet.Infra.SQL.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<AdAuction> Auctions { get; set; }
+        public DbSet<Offer> AllOffers { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatMessage> Messages{ get; set; }
     }
 }
+

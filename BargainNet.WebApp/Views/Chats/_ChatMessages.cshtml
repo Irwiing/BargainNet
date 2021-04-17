@@ -1,0 +1,19 @@
+﻿@model IEnumerable<BargainNet.Core.Entities.ChatMessage>
+
+@{
+    Layout = "";
+}
+@foreach (var item in Model)
+{
+    <dl class="row">
+        <dt class="col-sm-2">
+            @item.SendDate
+        </dt>
+        <dd class="col-sm-2">
+            @item.Sender.UserName
+        </dd>
+        <dd class="col-sm-8">
+            @item.Message 
+        </dd>
+    </dl>
+}

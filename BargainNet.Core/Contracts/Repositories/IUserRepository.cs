@@ -15,6 +15,6 @@ namespace BargainNet.Core.Contracts.Repositories
         Task DeleteAsync(string objId);
         Task<User> GetByIdAsync(string objId);
         Task<User> GetByUserNameAsync(string objUserName);
-        Task<List<User>> FindAllAssync();
+        Task<List<User>> FindAllAsync();
     }
 }

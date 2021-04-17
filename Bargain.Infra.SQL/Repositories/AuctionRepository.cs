@@ -28,21 +28,60 @@ namespace BargainNet.Infra.SQL.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<AdAuction>> FindAllAssync()
+        public async Task<List<AdAuction>> FindAllAsync()
         {
-            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).ToListAsync();
+            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).ThenInclude(offer => offer.User).ToListAsync();
         }
 
         public async Task<AdAuction> GetByIdAsync(Guid objId)
         {
-            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).FirstOrDefaultAsync(a => a.Id == objId) ;
+            return await _dataContext.Auctions.Include(a => a.AdAcutionSettings).Include(a => a.Category).Include(a => a.Offers).Include("Offers.User").FirstOrDefaultAsync(a => a.Id == objId) ;
 
         }
 
         public async Task UpdateAsync(AdAuction obj)
         {
-            _dataContext.Auctions.Update(obj);
-            await _dataContext.SaveChangesAsync();
+            var saved = false;
+            while (!saved)
+            {
+                try
+                {
+                    // Attempt to save changes to the database
+                    _dataContext.Auctions.Update(obj);
+                    await _dataContext.SaveChangesAsync();
+                    saved = true;
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    foreach (var entry in ex.Entries)
+                    {
+                        if (entry.Entity is Offer)
+                        {
+                            var proposedValues = entry.CurrentValues;
+                            var databaseValues = entry.GetDatabaseValues();
+
+                            foreach (var property in proposedValues.Properties)
+                            {
+                                var proposedValue = proposedValues[property];
+                                var databaseValue = databaseValues[property];
+
+                                // TODO: decide which value should be written to database
+                                // proposedValues[property] = <value to be saved>;
+                            }
+
+                            // Refresh original values to bypass next concurrency check
+                            entry.OriginalValues.SetValues(databaseValues);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException(
+                                "Don't know how to handle concurrency conflicts for "
+                                + entry.Metadata.Name);
+                        }
+                    }
+                }
+            }
+           
         }
     }
 }
