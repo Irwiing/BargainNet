@@ -1,0 +1,27 @@
+﻿@{
+    Guid id = (Guid)ViewData["chatId"];
+    Layout = "";
+}
+<div class="modal" id="rateModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Deixe sua avaliação para a outra parte da barganha</h5>
+            </div>
+            <form method="post" asp-action="GiveRate">
+                <input type="hidden" name="id" value="@id" />
+                <div class="modal-body">
+                    <input type="radio" name="rate" id="bad" value="-2" />
+                    <label for="bad"> :(</label>
+                    <input type="radio" name="rate" id="neutral" value="1" />
+                    <label for="neutral"> :|</label>
+                    <input type="radio" name="rate" id="good" value="2" />
+                    <label for="bad"> :)</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" onclick="" class="btn btn-primary">Avaliar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

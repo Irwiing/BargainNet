@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BargainNet.WebApp.Controllers
 {
+    [Authorize]
     public class UserProfilesController : Controller
     {
         private readonly IUserProfileService _userProfileService;
@@ -32,17 +33,18 @@ namespace BargainNet.WebApp.Controllers
             _auctionService = auctionService;
         }
 
-        [Authorize]
+        
         public async Task<IActionResult> Details()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var auctions = await _auctionService.GetUserInterestAuctions(userId);
-            ViewData["myAuctions"] = auctions;
-            return View(await _userProfileService.GetProfile(userId));
+        { 
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var auctions = await _auctionService.GetUserInterestAuctions(userId);
+                ViewData["myAuctions"] = auctions;
+                return View(await _userProfileService.GetProfile(userId));
+
         }
 
         // GET: UserProfiles/Create
-        [Authorize]
+    
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryService.GetCategories();
@@ -52,7 +54,7 @@ namespace BargainNet.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+ 
         public async Task<IActionResult> Create(UserProfile createProfile, Guid[] interests, int personType, IFormFile profilePic)
         {
             bool isLegalPerson = personType == 0 ? false : true;
