@@ -119,9 +119,9 @@ namespace BargainNet.WebApp.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var auction = await _auctionService.GetAuction(id);
-            var winner = _auctionService.GetWinner(auction);
             if (auction.AdAcutionSettings.Status == Status.Inactive)
             {
+                var winner = _auctionService.GetWinner(auction);
                 var chat = await _chatService.GetChatByAuctionId(id);
                 ViewData["ChatId"] = chat.Id;
                 if (winner.Id == userId)
