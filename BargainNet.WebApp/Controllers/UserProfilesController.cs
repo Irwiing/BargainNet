@@ -22,7 +22,7 @@ namespace BargainNet.WebApp.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IImageService _imageService;
         private readonly IAuctionService _auctionService;
-        public UserProfilesController(IUserProfileService userProfileService, 
+        public UserProfilesController(IUserProfileService userProfileService,
             ICategoryService categoryService,
             IImageService imageService,
             IAuctionService auctionService)
@@ -33,29 +33,39 @@ namespace BargainNet.WebApp.Controllers
             _auctionService = auctionService;
         }
 
-        
+
         public async Task<IActionResult> Details()
-        { 
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var auctions = await _auctionService.GetUserInterestAuctions(userId);
-                ViewData["myAuctions"] = auctions;
-                return View(await _userProfileService.GetProfile(userId));
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userProfileService.GetProfile(userId);
+            if (!user.UserProfile.Interests.Any())
+            {
+                return RedirectToAction("SetInterests");
+            }
+
+            if (user.UserProfile == null)
+            {
+                return RedirectToAction("Create");
+            }
+            var auctions = await _auctionService.GetUserInterestAuctions(userId);
+            ViewData["myAuctions"] = auctions;
+            return View(user);
 
         }
 
         // GET: UserProfiles/Create
-    
-        public async Task<IActionResult> Create()
+
+        public IActionResult Create()
         {
-            var categories = await _categoryService.GetCategories();
-            ViewData["Categories"] = categories;
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
- 
-        public async Task<IActionResult> Create(UserProfile createProfile, Guid[] interests, int personType, IFormFile profilePic)
+
+        public async Task<IActionResult> Create(UserProfile createProfile, int personType, IFormFile profilePic)
         {
             bool isLegalPerson = personType == 0 ? false : true;
             if (ModelState.IsValid)
@@ -65,25 +75,35 @@ namespace BargainNet.WebApp.Controllers
                 {
                     createProfile.NaturalPerson = null;
                     createProfile.TotalSlotsAd = Constants.LegalPersonFreeSlots;
-                }else
+                }
+                else
                 {
                     createProfile.LegalPerson = null;
                     createProfile.TotalSlotsAd = Constants.NaturalPersonFreeSlots;
                 }
+
                 bool created = false;
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                List<Category> interestCategories = new List<Category>();
-                foreach (var interest in interests)
-                {
-                    interestCategories.Add(await _categoryService.GetCategory(interest));
-                }
-                createProfile.Interests = interestCategories;
-                    created = await _userProfileService.CreateProfile(createProfile, userId);
 
-                if(created) return RedirectToAction(nameof(Details));
+                created = await _userProfileService.CreateProfile(createProfile, userId);
+
+                if (created) return RedirectToAction("SetInterests");
 
             }
             return View(createProfile);
+        }
+        public async Task<IActionResult> SetInterests()
+        {
+            return View(await _categoryService.GetCategories());
+        }
+        [HttpPost]
+        public async Task<IActionResult> SetInterests(Guid[] interests)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _userProfileService.SetInterests(userId, interests);
+
+
+            return RedirectToAction("Details", "UserProfiles");
         }
     }
 }

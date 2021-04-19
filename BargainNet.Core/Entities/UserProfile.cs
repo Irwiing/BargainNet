@@ -17,7 +17,7 @@ namespace BargainNet.Core.Entities
         public int TotalSlotsAd { get; set; }
         public Status Status { get; set; }
         public virtual IEnumerable<Category> Interests { get; set; }
-        public virtual IEnumerable<PaydPackage> PaydPackages { get; set; }
+        public virtual List<PaydPackage> PaydPackages { get; set; }
         public virtual List<AdAuction> AdAuctions { get; set; }
         public virtual LegalPerson LegalPerson { get; set; }
         public virtual NaturalPerson NaturalPerson { get; set; }

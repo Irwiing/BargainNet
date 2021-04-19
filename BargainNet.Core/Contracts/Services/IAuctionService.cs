@@ -16,5 +16,6 @@ namespace BargainNet.Core.Contracts.Services
         Task CreateOffer(Offer offer, Guid idAuction, string idUser);
         Task EndAuction(Guid idAuction, string id);
         User GetWinner(AdAuction auction);
+        Task AddSlot(string userId);
     }
 }

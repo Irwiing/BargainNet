@@ -49,8 +49,17 @@ namespace BargainNet.WebApp.Controllers
             if (auction == null) return View("_OfferList");
             return View("_OfferList", auction.Offers);
         }
-        public ActionResult CreateOffer(Guid id)
+        public async Task<ActionResult> CreateOffer(Guid id)
         {
+            var auction = await _auctionService.GetAuction(id);
+            var betterOffer = auction.Value;
+            if(auction.Offers.Count != 0)
+            {
+                betterOffer = auction.Offers.Max(o => o.Value);
+            }
+
+            ViewData["minValue"] = betterOffer + (decimal)0.1;
+            ViewData["maxValue"] = (auction.Value * (decimal)0.2) + betterOffer;
             ViewData["idAuction"] = id;
             return View("_CreateOffer");
         }
@@ -85,7 +94,7 @@ namespace BargainNet.WebApp.Controllers
                 ViewData["Categories"] = categories;
                 return View();
             }
-            return RedirectToAction("Details", "UserProfiles");
+            return RedirectToAction("BuySlots");
         }
 
         // POST: AuctionsController/Create
@@ -104,26 +113,17 @@ namespace BargainNet.WebApp.Controllers
 
         }
 
-        // GET: AuctionsController/Edit/5
-        public ActionResult Edit(int id)
+       
+        public ActionResult BuySlots()
         {
             return View();
         }
-
-        // POST: AUCtionsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+       [HttpPost]
+        public async Task<ActionResult> AddSlots()
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _auctionService.AddSlot(userId);
+            return RedirectToAction("Details", "UserProfiles");
         }
-
     }
 }

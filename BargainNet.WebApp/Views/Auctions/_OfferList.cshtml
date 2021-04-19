@@ -8,7 +8,7 @@
 }
 else
 {
-    @foreach (var item in Model)
+    @foreach (var item in Model.OrderByDescending(item => item.Value))
     {
 <dl class="row col-12">
     <dt class="col-sm-2">

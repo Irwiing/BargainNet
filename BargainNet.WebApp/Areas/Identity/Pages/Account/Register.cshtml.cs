@@ -102,7 +102,8 @@ namespace BargainNet.WebApp.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        return LocalRedirect("/identity/account/login");
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("Create", "UserProfiles");
                     }
                 }
                 foreach (var error in result.Errors)
