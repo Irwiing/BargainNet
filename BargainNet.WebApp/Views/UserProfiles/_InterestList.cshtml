@@ -1,0 +1,20 @@
+﻿@model IEnumerable<BargainNet.Core.Entities.AdAuction>
+  
+@{
+    var notify = ViewData["notifies"];
+    Layout = "";
+}
+<div class="d-flex justify-content-between">
+    <h4>Leilões de meu interesse</h4>
+    <span class="badge badge-danger ml-2 mr-auto ">@notify novos</span>
+    <input type="hidden" id="notify" value="@notify" />
+</div>
+<hr />
+<div class="d-flex overflow-auto">
+    @foreach (var auction in Model)
+    {
+        <div class="col-4">
+            <partial name="~/Views/Shared/_AuctionCard.cshtml" model="auction" />
+        </div>
+    }
+</div>

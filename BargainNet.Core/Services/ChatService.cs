@@ -38,7 +38,11 @@ namespace BargainNet.Core.Services
             await _chatRepository.AddAsync(newChat);
             return newChat.Id;
         }
-
+        public async Task<Chat> GetChatByAuctionId(Guid auctionId)
+        {
+            return await _chatRepository.GetChatByAuctionId(auctionId);
+            
+        }
         public async Task<Chat> GetChat(Guid id)
         {
             return await _chatRepository.GetByIdAsync(id);

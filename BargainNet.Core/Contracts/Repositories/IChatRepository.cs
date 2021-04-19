@@ -9,5 +9,6 @@ namespace BargainNet.Core.Contracts.Repositories
 {
     public interface IChatRepository : IRepositoryBase<Chat>
     {
+        Task<Chat> GetChatByAuctionId(Guid auctionId);
     }
 }

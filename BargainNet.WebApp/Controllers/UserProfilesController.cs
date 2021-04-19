@@ -48,10 +48,17 @@ namespace BargainNet.WebApp.Controllers
             {
                 return RedirectToAction("Create");
             }
-            var auctions = await _auctionService.GetUserInterestAuctions(userId);
-            ViewData["myAuctions"] = auctions;
+            
+            
             return View(user);
 
+        }
+        public async Task<IActionResult> CheckNotify(int notify = 0)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var auctions = await _auctionService.GetUserInterestAuctions(userId);
+            ViewData["notifies"] = auctions.Count ;
+            return View("_InterestList", auctions);
         }
 
         // GET: UserProfiles/Create
