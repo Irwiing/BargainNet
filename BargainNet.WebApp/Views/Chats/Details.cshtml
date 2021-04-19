@@ -8,6 +8,11 @@
 <h1>Details</h1>
 <div>
     <h1>Chat</h1>
+    <button type="button" onclick="endChatConfirm()" class="btn btn-primary">
+        Terminar Conversa
+    </button>
+    <div id="modalEnd"></div>
+    <div id="modalRate"></div>
     <div class="chat-panel panel panel-default">
         <div class="panel-heading">
             <i class="fa fa-paper-plane fa-fw"></i>
@@ -34,8 +39,8 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         const id = $('#idChat').val()
-        const updateMessage = async () => {
-            await $.ajax({
+        const updateMessage =  () => {
+            $.ajax({
                 type: 'GET',
                 url: `/Chats/GetMessages/${id}`,
                 dataType: 'html',
@@ -46,10 +51,48 @@
                 }
             });
         }
-        
+
         $(document).ready(function () {
             setInterval(updateMessage, 5050);
+            setInterval(openRate, 5050);
         });
+        const endChatConfirm = () => {
+            $.ajax({
+                type: 'GET',
+                url: `/Chats/Delete/${id}`,
+                dataType: 'html',
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#modalEnd').html(data);
+                    $('#confirmModal').modal();
+                }
+            });
+        }
+        const endChat = () => {
+            $.ajax({
+                type: 'POST',
+                url: `/Chats/Delete/${id}`,
+                cache: false,
+                async: true
+            });
+        }
+        const openRate = () => {
+            $.ajax({
+                type: 'GET',
+                url: `/Chats/GetRate/${id}`,
+                dataType: 'html',
+                cache: false,
+                async: true,
+                success: function (data) {
+                    if ($('#rateModal').length == 0) {
+                        $('#modalRate').html(data);
+                        $('#rateModal').modal({ backdrop: false, keyboard: false });
+                    }
+
+                }
+            });
+        }
     </script>
 }
 

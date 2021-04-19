@@ -27,12 +27,12 @@ namespace BargainNet.Core.Services
             var owner = await _userService.GetUser(ownerId);
             var auction = await _auctionService.GetAuction(auctionId);
             var winner = _auctionService.GetWinner(auction);
-            
+
             Chat newChat = new Chat()
             {
                 Auction = auction,
                 AuctionOwner = owner,
-                AuctionWinner = winner,                
+                AuctionWinner = winner,
             };
 
             await _chatRepository.AddAsync(newChat);
@@ -55,6 +55,46 @@ namespace BargainNet.Core.Services
             };
             chat.Messages.Add(newMessage);
             await _chatRepository.UpdateAsync(chat);
+        }
+
+        public async Task EndChat(Guid id)
+        {
+            var chat = await _chatRepository.GetByIdAsync(id);
+            chat.Status = Status.Inactive;
+            await _chatRepository.UpdateAsync(chat);
+        }
+        public async Task GiveRate(Guid chatId, string userId, int rate)
+        {
+            var chat = await _chatRepository.GetByIdAsync(chatId);
+
+            if (chat.AuctionOwner.Id == userId)
+            {
+                int totalPoints = chat.AuctionWinner.UserProfile.BarganhaPoints + rate;
+                if (totalPoints <= 999)
+                {
+                    chat.AuctionWinner.UserProfile.BarganhaPoints = totalPoints;
+                    await _userService.UpdateUser(chat.AuctionWinner);
+                }
+                else
+                {
+                    chat.AuctionWinner.UserProfile.BarganhaPoints = 999;
+                    await _userService.UpdateUser(chat.AuctionWinner);
+                }
+            }
+            else
+            {
+                int totalPoints = chat.AuctionOwner.UserProfile.BarganhaPoints + rate;
+                if (totalPoints <= 999)
+                {
+                    chat.AuctionOwner.UserProfile.BarganhaPoints = totalPoints;
+                    await _userService.UpdateUser(chat.AuctionOwner);
+                }
+                else
+                {
+                    chat.AuctionOwner.UserProfile.BarganhaPoints = 999;
+                    await _userService.UpdateUser(chat.AuctionOwner);
+                }
+            }
         }
     }
 }

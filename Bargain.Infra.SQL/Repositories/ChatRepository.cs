@@ -35,7 +35,7 @@ namespace BargainNet.Infra.SQL.Repositories
 
         public async Task<Chat> GetByIdAsync(Guid objId)
         {
-            return await _dataContext.Chats.Include(chat => chat.Messages).Include("Messages.Sender").FirstOrDefaultAsync(chat => chat.Id == objId);
+            return await _dataContext.Chats.Include(chat => chat.AuctionOwner.UserProfile).Include(chat => chat.AuctionWinner.UserProfile).Include(chat => chat.Auction).Include(chat => chat.Messages).Include("Messages.Sender").FirstOrDefaultAsync(chat => chat.Id == objId);
 
         }
 

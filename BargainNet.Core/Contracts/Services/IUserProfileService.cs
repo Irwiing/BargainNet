@@ -14,5 +14,6 @@ namespace BargainNet.Core.Contracts.Services
         Task<User> GetProfile(string id);
         Task<List<Category>> GetCategories();
         Task<bool> HasSlots(string userName);
+        Task SetInterests(string userId, Guid[] interests);
     }
 }

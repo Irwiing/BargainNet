@@ -47,6 +47,11 @@ namespace BargainNet.Core.Services
         {
             var auction = await _auctionRepository.GetByIdAsync(idAuction);
             offer.User = await _userService.GetUser(idUser);
+            var betterOffer = auction.Offers.FirstOrDefault(o => o.Value == auction.Offers.Max(o => o.Value));
+            if (offer.Value <= auction.Value || offer.Value <= betterOffer?.Value || betterOffer?.User.Id == offer.User.Id)
+            {
+                return ;
+            }
             auction.Offers.Add(offer);
             await _auctionRepository.UpdateAsync(auction);
         }
@@ -62,6 +67,17 @@ namespace BargainNet.Core.Services
         {
             var winnerOffer = auction.Offers.FirstOrDefault(offer => offer.Value == auction.Offers.Max(o => o.Value));
             return winnerOffer.User;
+        }
+        public async Task AddSlot(string userId)
+        {
+            var user = await _userService.GetUser(userId);
+            PaydPackage newPackage = new PaydPackage()
+            {
+                Quantity = 3
+            };
+            user.UserProfile.PaydPackages.Add(newPackage);
+            user.UserProfile.TotalSlotsAd += newPackage.Quantity;
+            await _userService.UpdateUser(user);
         }
     }
 }

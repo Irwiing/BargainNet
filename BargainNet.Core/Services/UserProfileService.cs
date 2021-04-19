@@ -57,5 +57,16 @@ namespace BargainNet.Core.Services
             }
             return false;
         }
+        public async Task SetInterests(string userId, Guid[] interests)
+        {
+            var user = await _userService.GetUser(userId);
+            List<Category> interestCategories = new List<Category>();
+            foreach (var interest in interests)
+            {
+                interestCategories.Add(await _categoryService.GetCategory(interest));
+            }
+            user.UserProfile.Interests = interestCategories;
+            await _userService.UpdateUser(user);
+        }
     }
 }

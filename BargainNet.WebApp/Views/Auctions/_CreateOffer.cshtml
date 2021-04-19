@@ -1,5 +1,7 @@
 ﻿@model BargainNet.Core.Entities.Offer
 @{ 
+    var minVal = ViewData["minValue"];
+    var maxVal = ViewData["maxValue"];
     System.Guid idAuction = (System.Guid)ViewData["idAuction"];
     Layout = "";
 }
@@ -13,8 +15,8 @@
                 
             </div>
             <div class="form-group">
-                <label asp-for="Value" class="control-label"></label>
-                <input asp-for="Value" class="form-control" />
+                <label for="Value" id="valueShow" class="control-label">@minVal</label>
+                <input type="range" id="Value" min="@minVal" max="@maxVal" value="@minVal" asp-for="Value" oninput="showVal(this.value)" class="form-control" />
                 <span asp-validation-for="Value" class="text-danger"></span>
             </div>
 

@@ -381,6 +381,7 @@ namespace BargainNet.WebApp.Migrations
                     AuctionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     AuctionOwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     AuctionWinnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

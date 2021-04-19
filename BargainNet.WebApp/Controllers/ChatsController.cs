@@ -17,16 +17,19 @@ namespace BargainNet.WebApp.Controllers
         {
             _chatService = chatService;
         }
-        // GET: ChatsController
-        public ActionResult Index()
-        {
-            return View();
-        }
 
-        // GET: ChatsController/Details/5
         public async Task<ActionResult> Details(Guid id)
         {
-            return View(await _chatService.GetChat(id));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var chat = await _chatService.GetChat(id);
+            if (chat != null && chat.Status == Status.Active)
+            {
+                if (userId == chat.AuctionOwner.Id || userId == chat.AuctionWinner.Id)
+                {
+                    return View(chat);
+                }
+            }
+            return RedirectToAction("Details", "UserProfile");
         }
 
         // POST: ChatsController/Create
@@ -39,7 +42,8 @@ namespace BargainNet.WebApp.Controllers
         public async Task<ActionResult> GetMessages(Guid id)
         {
             var chat = await _chatService.GetChat(id);
-            if(chat == null)
+
+            if (chat == null)
             {
                 return View("_ChatMessages");
             }
@@ -56,24 +60,35 @@ namespace BargainNet.WebApp.Controllers
 
 
         // GET: ChatsController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete()
         {
-            return View();
+            return View("_ConfirmModal");
         }
 
         // POST: ChatsController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            try
+            await _chatService.EndChat(id);
+            return Ok();
+        }
+
+        public async Task<ActionResult> GetRate(Guid id)
+        {
+            ViewData["chatId"] = id;
+            var chat = await _chatService.GetChat(id);
+            if (chat.Status == Status.Inactive)
             {
-                return RedirectToAction(nameof(Index));
+                return View("_RateModal");
             }
-            catch
-            {
-                return View();
-            }
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<ActionResult> GiveRate(Guid id, int rate)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _chatService.GiveRate(id, userId, rate);
+            return RedirectToAction("Details", "UserProfiles");
         }
     }
 }

@@ -12,5 +12,7 @@ namespace BargainNet.Core.Contracts.Services
         Task<Guid> CreateChat(string ownerId, Guid auctionId);
         Task<Chat> GetChat(Guid id);
         Task SaveMessage(Guid idChat, string message, string userId);
+        Task EndChat(Guid id);
+        Task GiveRate(Guid chatId, string userId, int rate);
     }
 }

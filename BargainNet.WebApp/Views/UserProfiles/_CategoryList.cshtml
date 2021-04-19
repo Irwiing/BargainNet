@@ -1,0 +1,12 @@
+﻿@model IEnumerable<BargainNet.Core.Entities.Category>
+
+<form method="post" asp-action="SetInterests">
+    @foreach (var item in Model)
+    {
+        <span class="btn btn-danger">
+            <input class="custom-checkbox rounded" type="checkbox" id="@item.Name" value="@item.Id" name="interests" />
+            <label for="@item.Name">@item.Name</label>
+        </span>
+    }
+    <button type="submit" class="btn btn-primary"> Salvar </button>
+</form>

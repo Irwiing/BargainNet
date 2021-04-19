@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Create";
-    List<BargainNet.Core.Entities.Category> categories = ViewData["Categories"] as List<BargainNet.Core.Entities.Category>;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -47,12 +46,7 @@
                     <partial name="~/Views/UserProfiles/_AddressPartial.cshtml" />
                 </div>
             </div>
-            
-                @foreach (BargainNet.Core.Entities.Category category in categories)
-                {
-                    <partial name="~/Views/Shared/_CategoryPartial.cshtml" model="category"/>
-                }
-            
+                            
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
