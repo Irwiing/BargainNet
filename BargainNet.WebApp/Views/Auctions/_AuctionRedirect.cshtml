@@ -1,0 +1,33 @@
+﻿@{
+    Guid id = (Guid)ViewData["chatId"];
+    bool isWinner = (bool)ViewData["IsWinner"];
+    Layout = "";
+}
+<div class="modal" id="modalRedirect" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">O Leilão terminou!</h5>
+            </div>
+            @if (isWinner)
+            {
+                <div class="modal-body">
+                    <p class="text-black-50">Você ganhou o leilão!</p>
+                </div>
+                @Html.ActionLink("Ir para o chat", "Details", "Chats", new { id }, new { @class = "btn btn-danger" })
+            }
+            else
+            {
+                <div class="modal-body">
+                    <p class="text-black-50">Não foi dessa vez!</p>
+                </div>
+                @Html.ActionLink("Voltar para o perfil", "Details", "UserProfiles",null, new { @class = "btn btn-danger" })
+            }
+
+            <div class="modal-footer">
+                <button type="submit" onclick="" class="btn btn-primary">Avaliar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

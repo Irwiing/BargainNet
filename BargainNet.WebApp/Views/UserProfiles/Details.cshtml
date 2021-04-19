@@ -2,14 +2,13 @@
 
 @{
     ViewData["Title"] = "Details";
-    List<BargainNet.Core.Entities.AdAuction> myAuctions = ViewData["MyAuctions"] as List<BargainNet.Core.Entities.AdAuction>;
-    Layout = "~/Views/Shared/_Layout.cshtml";
+        Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container d-flex justify-content-between align-content-center">
 
 
     <div class="text-center img rounded-circle bg-dark">
-            <img class="image-profile rounded-circle" src="@Model.UserProfile.ProfilePic" />
+        <img class="image-profile rounded-circle" src="@Model.UserProfile.ProfilePic" />
     </div>
     @if (Model.UserProfile.LegalPerson != null)
     {
@@ -41,15 +40,31 @@
             </div>
         }
     </div>
-
-    <h4>Meus interesses</h4>
-    <hr />
-    <div class="d-flex overflow-auto">
-        @foreach (BargainNet.Core.Entities.AdAuction auction in myAuctions)
-        {
-            <div class="col-4">
-                <partial name="~/Views/Shared/_AuctionCard.cshtml" model="auction" />
-            </div>
-        }
+    <div id="interests">
+        
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        const checkNotify = async () => {
+            const notify = $('#notify').val() == null ? 0 : $('#notify').val()
+            $.ajax({
+                type: 'GET',
+                url: `/UserProfiles/CheckNotify`,
+                data: {
+                    notify
+                },
+                dataType: 'html',
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#interests').html(data);
+                }
+            });
+        }
+        setInterval(checkNotify, 5000)
+            
+    </script>
+}

@@ -16,12 +16,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div id="offer" class="modal-body">
-
-            </div>
+            <div id="offer" class="modal-body"></div>
         </div>
     </div>
 </div>
+<div id="redirectModal"></div>
 <div class="row col-12">
     <div class="col-6">
         <div class="d-flex justify-content-between">
@@ -103,6 +102,21 @@
                 }
             });
         }
+        const checkStatus = async () => {
+            await $.ajax({
+                type: 'GET',
+                url: `/Auctions/CheckStatus/${id}`,
+                dataType: 'html',
+                cache: false,
+                async: true,
+                success: function (data) {
+                    if ($('#modalRedirect').length == 0) {
+                        $('#redirectModal').html(data);
+                        $('#modalRedirect').modal({ backdrop: false, keyboard: false });
+                    }
+                }
+            });
+        }
        const createOffer = async () => {
             await $.ajax({
                 type: 'GET',
@@ -115,8 +129,10 @@
                 }
             });
         }
+        
         $(document).ready(function () {
-            setInterval(updateOffer, 5050);
+            setInterval(updateOffer, 5000);
+            setInterval(checkStatus, 5000)
         });
         function showVal(value) {
             $('#valueShow').html(value)

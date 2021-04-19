@@ -16,15 +16,18 @@ namespace BargainNet.WebApp.Controllers
         private readonly IAuctionService _auctionService;
         private readonly IUserProfileService _userProfileService;
         private readonly IImageService _imageService;
+        private readonly IChatService _chatService;
         public AuctionsController(ICategoryService categoryService,
             IAuctionService auctionService,
             IUserProfileService userProfileService,
-            IImageService imageService)
+            IImageService imageService,
+            IChatService chatService)
         {
             _categoryService = categoryService;
             _auctionService = auctionService;
             _userProfileService = userProfileService;
             _imageService = imageService;
+            _chatService = chatService;
         }
         // GET: AuctionsController
         public async Task<IActionResult> Index()
@@ -112,7 +115,28 @@ namespace BargainNet.WebApp.Controllers
             return RedirectToAction("Details", "UserProfiles");
 
         }
+        public async Task<ActionResult> CheckStatus(Guid id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var auction = await _auctionService.GetAuction(id);
+            if (auction.AdAcutionSettings.Status == Status.Inactive)
+            {
+                var winner = _auctionService.GetWinner(auction);
+                var chat = await _chatService.GetChatByAuctionId(id);
+                ViewData["ChatId"] = chat.Id;
+                if (winner.Id == userId)
+                {
+                    ViewData["IsWinner"] = true;
+                }
+                else
+                {
+                    ViewData["IsWinner"] = false;
+                }
 
+                return View("_AuctionRedirect");
+            }
+            return Ok();
+        }
        
         public ActionResult BuySlots()
         {

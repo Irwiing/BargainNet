@@ -23,12 +23,12 @@ namespace BargainNet.Core.Services
             var user = await _userService.GetUser(userId);
             user.UserProfile.AdAuctions.Add(auction);
             await _userService.UpdateUser(user);
-            
+
         }
         public async Task<List<AdAuction>> GetAuctions()
         {
-           
-            return  await _auctionRepository.FindAllAsync();
+
+            return await _auctionRepository.FindAllAsync();
         }
         public async Task<AdAuction> GetAuction(Guid auctionId)
         {
@@ -50,7 +50,7 @@ namespace BargainNet.Core.Services
             var betterOffer = auction.Offers.FirstOrDefault(o => o.Value == auction.Offers.Max(o => o.Value));
             if (offer.Value <= auction.Value || offer.Value <= betterOffer?.Value || betterOffer?.User.Id == offer.User.Id)
             {
-                return ;
+                return;
             }
             auction.Offers.Add(offer);
             await _auctionRepository.UpdateAsync(auction);
@@ -65,8 +65,12 @@ namespace BargainNet.Core.Services
         }
         public User GetWinner(AdAuction auction)
         {
-            var winnerOffer = auction.Offers.FirstOrDefault(offer => offer.Value == auction.Offers.Max(o => o.Value));
-            return winnerOffer.User;
+            if (auction.Offers.Any())
+            {
+                var winnerOffer = auction.Offers.FirstOrDefault(offer => offer.Value == auction.Offers.Max(o => o.Value));
+                return winnerOffer.User;
+            }
+            return null;
         }
         public async Task AddSlot(string userId)
         {
