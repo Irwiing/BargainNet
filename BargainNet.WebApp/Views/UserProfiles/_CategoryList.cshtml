@@ -4,7 +4,7 @@
     @foreach (var item in Model)
     {
         <span class="btn btn-danger m-2">
-            <input class="custom-checkbox rounded" type="checkbox" id="@item.Name" value="@item.Id" name="interests" />
+            <input class="custom-checkbox rounded" type="checkbox" id="@item.Name" value="@item.Id" name="interests" @(Html.Raw(item.isChecked ? "checked=\"checked\"" : ""))/>
             <label for="@item.Name">@item.Name</label>
         </span>
     }

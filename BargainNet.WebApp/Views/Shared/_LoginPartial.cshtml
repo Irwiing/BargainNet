@@ -18,7 +18,10 @@
 
 
                         <li class="nav-item">
-                            @Html.ActionLink("Minha área", "Details", "UserProfiles", new { userName = @UserManager.GetUserName(User) }, new { @class = "nav-link text-dark" })
+                            @Html.ActionLink("Minha área", "Details", "UserProfiles", null , new { @class = "nav-link text-dark" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Meus interesses", "SetInterests", "UserProfiles", null, new { @class = "nav-link text-dark" })
                         </li>
                         <li class="nav-item">
                             @Html.ActionLink("Leilões de interesse", "Index", "Auctions", null, new { @class = "nav-link text-dark" })
