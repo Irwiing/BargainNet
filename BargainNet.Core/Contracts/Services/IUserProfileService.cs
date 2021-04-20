@@ -1,5 +1,6 @@
 ﻿using BargainNet.Core.Contracts.Entities;
 using BargainNet.Core.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace BargainNet.Core.Contracts.Services
 {
     public interface IUserProfileService
     {
-        Task<bool> CreateProfile(UserProfile userProfile, string userName);
+        Task CreateProfile(UserProfile userProfile, string userId, int personType, IFormFile profilePic, IFormFile documentPic);
         Task<User> GetProfile(string id);
         Task<List<Category>> GetCategories();
         Task<bool> HasSlots(string userName);

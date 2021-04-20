@@ -1,15 +1,16 @@
 ﻿@model IEnumerable<BargainNet.Core.Entities.AdAuction>
 
 
-<div class="container row">
-    <div class="row col-12">
+<div class="d-flex justify-content-between">
+    <h4>Leilões de meu interesse</h4>
 
-        @foreach (var item in Model)
-        {
-            <div class="col-4">
-                <partial name="~/Views/Shared/_AuctionCard.cshtml" model="item" />
-            </div>
-        }
-    </div>
 </div>
-
+<hr />
+<div class="d-flex overflow-auto">
+    @foreach (var auction in Model)
+    {
+        <div class="col-4">
+            <partial name="~/Views/Shared/_AuctionCard.cshtml" model="auction" />
+        </div>
+    }
+</div>

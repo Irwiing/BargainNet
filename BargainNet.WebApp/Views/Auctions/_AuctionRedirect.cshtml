@@ -14,20 +14,19 @@
                 <div class="modal-body">
                     <p class="text-black-50">Você ganhou o leilão!</p>
                 </div>
-                @Html.ActionLink("Ir para o chat", "Details", "Chats", new { id }, new { @class = "btn btn-danger" })
+                <div class="modal-footer">
+                    @Html.ActionLink("Ir para o chat", "Details", "Chats", new { id }, new { @class = "btn btn-danger" })
+                </div>
             }
             else
             {
                 <div class="modal-body">
                     <p class="text-black-50">Não foi dessa vez!</p>
                 </div>
-                @Html.ActionLink("Voltar para o perfil", "Details", "UserProfiles",null, new { @class = "btn btn-danger" })
+                <div class="modal-footer">
+                    @Html.ActionLink("Voltar para o perfil", "Details", "UserProfiles", null, new { @class = "btn btn-danger" })
+                </div>
             }
-
-            <div class="modal-footer">
-                <button type="submit" onclick="" class="btn btn-primary">Avaliar</button>
-            </div>
-
         </div>
     </div>
 </div>

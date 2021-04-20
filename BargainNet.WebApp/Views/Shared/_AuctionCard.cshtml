@@ -1,10 +1,16 @@
 ﻿@model BargainNet.Core.Entities.AdAuction
 
-    <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="@Model.AdPic" alt="@Model.Name">
+<div class="border mb-2 h-25 d-flex flex-column">
+    <h4 class="card-title col-12 text-center">@Model.Name</h4>
+    <div class="d-flex border">
+        <img class="col-4 pr-2 border-right" src="@Model.AdPic" alt="@Model.Name">
         <div class="card-body">
-            <h5 class="card-title">@Model.Name</h5>
-            <p class="card-text">@Model.Description</p>
-            @Html.ActionLink("Ver leilão", "Details", "Auctions", new  { id = @Model.Id } , new { @class = "btn btn-danger" })
+            <div class="">
+                <p class="card-text ">R$@Model.Value</p>
+                <p class="card-text">@Model.Category.Name</p>
+                <p class="card-text  ">@Model.Description</p>
+            </div>
         </div>
     </div>
+    @Html.ActionLink("Ver leilão", "Details", "Auctions", new { id = @Model.Id }, new { @class = "btn btn-danger" })
+</div>

@@ -10,7 +10,6 @@ using BargainNet.Infra.SQL.Data;
 using BargainNet.Core.Contracts.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using BargainNet.WebApp.ModelView;
 using Microsoft.AspNetCore.Http;
 
 namespace BargainNet.WebApp.Controllers
@@ -20,16 +19,14 @@ namespace BargainNet.WebApp.Controllers
     {
         private readonly IUserProfileService _userProfileService;
         private readonly ICategoryService _categoryService;
-        private readonly IImageService _imageService;
+        
         private readonly IAuctionService _auctionService;
         public UserProfilesController(IUserProfileService userProfileService,
             ICategoryService categoryService,
-            IImageService imageService,
             IAuctionService auctionService)
         {
             _categoryService = categoryService;
             _userProfileService = userProfileService;
-            _imageService = imageService;
             _auctionService = auctionService;
         }
 
@@ -39,29 +36,34 @@ namespace BargainNet.WebApp.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userProfileService.GetProfile(userId);
-            if (!user.UserProfile.Interests.Any())
-            {
-                return RedirectToAction("SetInterests");
-            }
-
+           
             if (user.UserProfile == null)
             {
                 return RedirectToAction("Create");
             }
-            
+            if (!user.UserProfile.Interests.Any())
+            {
+                return RedirectToAction("SetInterests");
+            }
             
             return View(user);
 
         }
-        public async Task<IActionResult> CheckNotify(int notify = 0)
+        public async Task<IActionResult> CheckNotify()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userProfileService.GetProfile(userId);
+            if (user.UserProfile == null)
+            {
+                return BadRequest();
+            }
+            if (!user.UserProfile.Interests.Any())
+            {
+                return BadRequest();
+            }
             var auctions = await _auctionService.GetUserInterestAuctions(userId);
-            ViewData["notifies"] = auctions.Count ;
-            return View("_InterestList", auctions);
+            return Ok(auctions.Count);
         }
-
-        // GET: UserProfiles/Create
 
         public IActionResult Create()
         {
@@ -72,30 +74,26 @@ namespace BargainNet.WebApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> Create(UserProfile createProfile, int personType, IFormFile profilePic)
+        public async Task<IActionResult> Create(IFormFile profilePic, IFormFile documentPic, int personType, UserProfile createProfile)
         {
-            bool isLegalPerson = personType == 0 ? false : true;
+           
             if (ModelState.IsValid)
             {
-                createProfile.ProfilePic = _imageService.ConvertImgToString(profilePic);
-                if (isLegalPerson)
-                {
-                    createProfile.NaturalPerson = null;
-                    createProfile.TotalSlotsAd = Constants.LegalPersonFreeSlots;
-                }
-                else
-                {
-                    createProfile.LegalPerson = null;
-                    createProfile.TotalSlotsAd = Constants.NaturalPersonFreeSlots;
-                }
-
-                bool created = false;
+                
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                try
+                {
+                    
+                   await _userProfileService.CreateProfile(createProfile, userId, personType, profilePic, documentPic);
+                }
+                catch (Exception e)
+                {
 
-                created = await _userProfileService.CreateProfile(createProfile, userId);
+                    ViewData["ErroMessage"] = e.Message;
+                    return View(createProfile);
+                }
 
-                if (created) return RedirectToAction("SetInterests");
-
+                return RedirectToAction("SetInterests");
             }
             return View(createProfile);
         }

@@ -48,9 +48,13 @@ namespace BargainNet.Core.Services
             var auction = await _auctionRepository.GetByIdAsync(idAuction);
             offer.User = await _userService.GetUser(idUser);
             var betterOffer = auction.Offers.FirstOrDefault(o => o.Value == auction.Offers.Max(o => o.Value));
-            if (offer.Value <= auction.Value || offer.Value <= betterOffer?.Value || betterOffer?.User.Id == offer.User.Id)
+            if (offer.Value <= auction.Value || offer.Value <= betterOffer?.Value )
             {
-                return;
+                throw new Exception("Seu lance deve ser maior que o ultimo!");
+            }
+            if(betterOffer?.User.Id == offer.User.Id)
+            {
+                throw new Exception("Você não pode dar dois lances seguidos");
             }
             auction.Offers.Add(offer);
             await _auctionRepository.UpdateAsync(auction);

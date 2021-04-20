@@ -2,7 +2,8 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    var error = (string)ViewData["ErroMessage"];
+    Layout = "_Layout";
 }
 
 <h1>Create</h1>
@@ -12,13 +13,13 @@
 <div class="row">
     <div class="col-md-12">
         <form enctype="multipart/form-data" asp-action="Create">
-            <div class="d-flex">
+            <div class="d-flex flex-column">
+                <span class="text-danger">@error</span>
                 <div class="col-md-6">
                     <input class="" id="naturalPerson" type="radio" name="personType" value="0" data-toggle="collapse" data-parent="#people" href="#naturalPerson">
                     <label for="naturalPerson">Pessoa Fisica</label>
                     <input class="" id="legalPerson" type="radio" name="personType" value="1" data-toggle="collapse" data-parent="#people" href="#legalPerson">
                     <label for="legalPerson">Pessoa Jurídica</label>
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Document" class="control-label"></label>
                         <input asp-for="Document" class="form-control" />
@@ -26,8 +27,8 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="ProfilePic" class="control-label"></label>
-                        <input type="file" accept="image/*" name="profilePic" class="form-control" />
-                        <span asp-validation-for="ProfilePic" class="text-danger"></span>
+                        <input type="file" accept="image/*" name="profilePic" class="form-control-file"/>
+                        
                     </div>
                     <div class="panel-group" id="people">
                         <div id="naturalPersonPanel" class="panel-collapse collapse ">
