@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BargainNet.WebApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210417230912_v1")]
+    [Migration("20210420054418_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
