@@ -6,11 +6,9 @@
 
 </div>
 <hr />
-<div class="d-flex overflow-auto">
+<div class="d-flex flex-column">
     @foreach (var auction in Model)
     {
-        <div class="col-4">
-            <partial name="~/Views/Shared/_AuctionCard.cshtml" model="auction" />
-        </div>
+        <partial name="~/Views/Shared/_AuctionCard.cshtml" model="auction" />
     }
 </div>

@@ -144,7 +144,8 @@ namespace BargainNet.WebApp.Controllers
             {
                 var winner = _auctionService.GetWinner(auction);
                 var chat = await _chatService.GetChatByAuctionId(id);
-                ViewData["ChatId"] = chat.Id;
+                if(chat != null) ViewData["ChatId"] = chat.Id;
+
                 if (winner.Id == userId)
                 {
                     ViewData["IsWinner"] = true;

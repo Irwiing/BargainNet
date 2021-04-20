@@ -86,5 +86,22 @@ namespace BargainNet.Core.Services
             user.UserProfile.Interests = interestCategories;
             await _userService.UpdateUser(user);
         }
+        public async Task<List<Category>> GetInterests(string userId)
+        {
+            var categories = await _categoryService.GetCategories();
+            var user = await _userService.GetUser(userId);
+
+            categories.ForEach(c => {
+                if (user.UserProfile.Interests.Contains(c)) {
+                    c.isChecked = true;
+                }
+                else
+                {
+                    c.isChecked = false;
+                }
+            });
+
+            return categories;
+        }
     }
 }

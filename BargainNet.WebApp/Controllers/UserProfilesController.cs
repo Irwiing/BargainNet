@@ -29,8 +29,7 @@ namespace BargainNet.WebApp.Controllers
             _userProfileService = userProfileService;
             _auctionService = auctionService;
         }
-
-
+        
         public async Task<IActionResult> Details()
         {
 
@@ -64,7 +63,7 @@ namespace BargainNet.WebApp.Controllers
             var auctions = await _auctionService.GetUserInterestAuctions(userId);
             return Ok(auctions.Count);
         }
-
+    
         public IActionResult Create()
         {
 
@@ -99,7 +98,8 @@ namespace BargainNet.WebApp.Controllers
         }
         public async Task<IActionResult> SetInterests()
         {
-            return View(await _categoryService.GetCategories());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);    
+            return View(await _userProfileService.GetInterests(userId));
         }
         [HttpPost]
         public async Task<IActionResult> SetInterests(Guid[] interests)

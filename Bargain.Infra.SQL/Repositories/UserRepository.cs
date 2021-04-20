@@ -41,7 +41,7 @@ namespace BargainNet.Infra.SQL.Repositories
                 .Include(u => u.UserProfile)
                 .Include(up => up.UserProfile.NaturalPerson)
                 .Include(up => up.UserProfile.LegalPerson)
-                .Include(up => up.UserProfile.AdAuctions).Include("AdAuctions.AdAcutionSettings")
+                .Include(up => up.UserProfile.AdAuctions).ThenInclude(aa => aa.Category)
                 .Include(up => up.UserProfile.Interests)
                 .Include(up => up.UserProfile.PaydPackages)
                 .Include(up => up.UserProfile.Address)
