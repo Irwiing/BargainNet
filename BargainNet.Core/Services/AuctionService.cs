@@ -21,6 +21,7 @@ namespace BargainNet.Core.Services
         public async Task CreateAuction(string userId, AdAuction auction)
         {
             var user = await _userService.GetUser(userId);
+            if (auction.Value < (decimal)0.10) auction.Value = (decimal)0.10;
             user.UserProfile.AdAuctions.Add(auction);
             await _userService.UpdateUser(user);
 
