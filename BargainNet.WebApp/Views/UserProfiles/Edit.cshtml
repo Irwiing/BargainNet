@@ -23,21 +23,7 @@
                 <input asp-for="ProfilePic" class="form-control" />
                 <span asp-validation-for="ProfilePic" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="BarganhaPoints" class="control-label"></label>
-                <input asp-for="BarganhaPoints" class="form-control" />
-                <span asp-validation-for="BarganhaPoints" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalSlotsAd" class="control-label"></label>
-                <input asp-for="TotalSlotsAd" class="form-control" />
-                <span asp-validation-for="TotalSlotsAd" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
+            <partial name="_AddressPartial.cshtml" />
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -46,9 +32,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -7,12 +7,12 @@ a.navbar-brand {
   word-break: break-all;
 }
 img.image-profile{
-    width: 250px;
-    height: 250px;
+    width: 100px;
+    height: 103px;
 }
 img.card-img-top {
-    
-    height: 250px;
+    width: 100px;
+    height: 100px;
 }
 /* Provide sufficient contrast against white background */
 a {

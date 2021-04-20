@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var error = (string)ViewData["ErroMessage"];
     bool isOwner = (bool)ViewData["IsOwner"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -27,7 +28,7 @@
             <h4>AdAuction</h4>
             @if (isOwner)
             {
-                @Html.ActionLink("Finalizar", "EndAuction", new { idAuction = @Model.Id } , new { @class = "btn btn-danger" })
+                @Html.ActionLink("Finalizar", "EndAuction", new { idAuction = @Model.Id }, new { @class = "btn btn-danger" })
             }
         </div>
         <input id="idAuct" type="hidden" name="idAuction" value="@Model.Id" />
@@ -74,6 +75,7 @@
     <div class="col-6">
         <div class="d-flex justify-content-between">
             <h4>Lances</h4>
+            <span class="text-danger">@error</span>
             @if (!isOwner)
             {
                 <button type="button" onclick="createOffer()" class="btn btn-primary" data-toggle="modal" data-target="#offerModal">
@@ -117,7 +119,7 @@
                 }
             });
         }
-       const createOffer = async () => {
+        const createOffer = async () => {
             await $.ajax({
                 type: 'GET',
                 url: `/Auctions/CreateOffer/${id}`,
@@ -129,7 +131,7 @@
                 }
             });
         }
-        
+
         $(document).ready(function () {
             setInterval(updateOffer, 5000);
             setInterval(checkStatus, 5000)

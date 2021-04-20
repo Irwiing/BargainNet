@@ -2,6 +2,7 @@
 using BargainNet.Core.Contracts.Repositories;
 using BargainNet.Core.Contracts.Services;
 using BargainNet.Core.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,28 +14,45 @@ namespace BargainNet.Core.Services
     public class UserProfileService : IUserProfileService
     {
         private readonly IUserService _userService;
-        private readonly IUserProfileRepository _userProfileRepository;
-        private readonly ICategoryService _categoryService;
 
-        public UserProfileService(IUserService userService, 
-            IUserProfileRepository userProfileRepository,
+        private readonly ICategoryService _categoryService;
+        private readonly IImageService _imageService;
+
+        public UserProfileService(IUserService userService,
+            IImageService imageService,
             ICategoryService categoryService)
         {
             _userService = userService;
             _categoryService = categoryService;
-            _userProfileRepository = userProfileRepository;
+            _imageService = imageService;
         }
 
-        public async Task<bool> CreateProfile(UserProfile userProfile, string userName)
+        public async Task CreateProfile(UserProfile userProfile, string userId, int personType, IFormFile profilePic, IFormFile documentPic)
         {
-            var user = await GetProfile(userName);
+            bool isLegalPerson = personType == 0 ? false : true;
+            if (profilePic == null)
+            {
+                throw new Exception("Insira uma foto!");
+            }
+            userProfile.ProfilePic = _imageService.ConvertImgToString(profilePic);
+            if (isLegalPerson)
+            {
+                if (!Maoli.Cnpj.Validate(userProfile.Document)) throw new Exception("CNPJ Inválido!");
+                if (documentPic == null) throw new Exception("Insira o documento de comprovação!");
+                userProfile.LegalPerson.DocumentPic = _imageService.ConvertImgToString(documentPic);
+                userProfile.NaturalPerson = null;
+                userProfile.TotalSlotsAd = Constants.LegalPersonFreeSlots;
+            }
+            else
+            {
+                if (!Maoli.Cpf.Validate(userProfile.Document)) throw new Exception("Cpf Inválido!");
+                userProfile.LegalPerson = null;
+                userProfile.TotalSlotsAd = Constants.NaturalPersonFreeSlots;
+            }
+            var user = await GetProfile(userId);
 
             user.UserProfile = userProfile;
-            if (await _userService.UpdateUser(user))
-            {
-                return true;
-            }
-            return false;
+            await _userService.UpdateUser(user);
         }
 
         public Task<List<Category>> GetCategories()

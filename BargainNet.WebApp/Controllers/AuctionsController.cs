@@ -32,7 +32,20 @@ namespace BargainNet.WebApp.Controllers
         // GET: AuctionsController
         public async Task<IActionResult> Index()
         {
-            return View(await _auctionService.GetAuctions());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userProfileService.GetProfile(userId);
+
+            if (user.UserProfile == null)
+            {
+                return RedirectToAction("Create", "UserProfiles");
+            }
+            if (!user.UserProfile.Interests.Any())
+            {
+                return RedirectToAction("SetInterests", "UserProfiles");
+            }
+            
+            var auctions = await _auctionService.GetUserInterestAuctions(userId);
+            return View(auctions);
         }
 
         // GET: AuctionsController/Details/5
@@ -71,7 +84,15 @@ namespace BargainNet.WebApp.Controllers
         public async Task<ActionResult> CreateOffer([Bind("Value")] Offer offer, Guid idAuction)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _auctionService.CreateOffer(offer, idAuction, userId);
+            try
+            {
+                await _auctionService.CreateOffer(offer, idAuction, userId);
+
+            }
+            catch (Exception e)
+            {
+                ViewData["ErroMessage"] = e.Message;
+            }
             return RedirectToAction("Details", new { id = idAuction });
         }
         public ActionResult EndAuction(Guid idAuction)
