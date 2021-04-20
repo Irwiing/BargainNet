@@ -14,3 +14,6 @@
     </div>
     @Html.ActionLink("Ver leilão", "Details", "Auctions", new { id = @Model.Id }, new { @class = "btn btn-danger" })
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
