@@ -13,4 +13,4 @@ The owner of sale can end the auction when he was enought offer.
  - You'll need to change connection string at `appsettings.config`
  > ` "BargainContextConnection": "Server=serverIp;DataBase=dbName;User ID=dbUsername;Password=dbPassword;"`
 - in sequence you'll need update your database, to this go to package manager in the `BargainNet.WebApp`  project and run
-> `  Updtade-Database ` 
+> `  Update-Database ` 
